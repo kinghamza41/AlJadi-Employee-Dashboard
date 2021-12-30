@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Dashboard</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email_or_username">Email or Username</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="present">Present</string>
+    <string name="absent">Absent</string>
+    <string name="pending">Pending Leaves</string>
+    <string name="leaves_today">Leaves Today</string>
+    <string name="id">ID</string>
+    <string name="name">Name</string>
+    <string name="company">Company</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="present_employee">Present Employee</string>
+    <string name="absent_employee">Absent Employee</string>
+    <string name="leaves_today1">Leaves Today</string>
+    <string name="pending_employees">Pending Leaves</string>
+    <string name="dashboard_home">Home</string>
+    <string name="logout">Logout</string>
+    <string name="al_jadi_logo">Al Jadi Logo</string>
+    <string name="_1">1</string>
+    <string name="ali">Ali</string>
+    <string name="al_jadi">Al Jadi</string>
+    <string name="_10_00am">10:00AM</string>
+    <string name="_12_00pm">12:00PM</string>
+    <string name="total">total</string>
+    <string name="view_btn">View</string>
+    <string name="todo">TODO</string>
+    <string name="StartEndTime">Start,End Time</string>
+    <string name="arrival_time">Arrival Time</string>
+    <string name="working_hours">Working Hours</string>
+    <string name="salary">Salary</string>
+    <string name="leaves">Leaves</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="total_leaves">Total Leaves</string>
+    <string name="pending_leaves">Pending Leaves</string>
+    <string name="approved_rejected">Approved / Rejected</string>
+    <string name="apply_for_leaves">Apply for Leaves</string>
+    <string name="payroll">Payroll</string>
+    <string name="payroll_config">Payroll Config</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/button_bg_style.xml" value="0.12222222222222222" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/button_bg_style2.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/button_login.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/ic_baseline_home_24.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/ic_baseline_settings_24.xml" value="0.12222222222222222" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.12222222222222222" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable-v24/white_circle.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/drawable/ic_launcher_background.xml" value="0.12222222222222222" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/activity_navigation_drawer.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/activity_splash.xml" value="0.153125" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/drawerlayout.xml" value="0.13148148148148148" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/fragment_home.xml" value="0.17552083333333332" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/fragment_leaves.xml" value="0.1375" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/layout/nav_header.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/menu/icon_menu.xml" value="0.1" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/menu/payroll_configuration.xml" value="0.13796296296296295" />
+        <entry key="..\:/Users/hamza/AndroidStudioProjects/AlJadi_Employee_Dashboard/app/src/main/res/menu/payroll_configuratoin.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

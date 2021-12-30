@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/dashboard_home" />
+    <item
+        android:id="@+id/Leaves"
+        android:icon="@drawable/leaves"
+        android:title="@string/leaves" />
+
+    <group
+        android:checkableBehavior="none"
+        android:menuCategory="system">
+        <item
+            android:id="@+id/payroll"
+            android:icon="@drawable/ic_baseline_payments_24"
+            android:title="@string/payroll_config" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/baseline_logout_black_24"
+            android:title="@string/logout" />
+    </group>
+</menu>
