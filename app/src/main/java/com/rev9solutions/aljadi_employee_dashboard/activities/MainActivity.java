@@ -9,12 +9,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
+import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.HomeFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.LeavesFragment;
 import com.rev9solutions.aljadi_employee_dashboard.R;
@@ -48,23 +55,52 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.Home:
+
                         Toast.makeText(MainActivity.this, "Home Panel is open", Toast.LENGTH_SHORT).show();
                         temp = new HomeFragment();
-
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
                         break;
                     case R.id.Leaves:
                         Toast.makeText(MainActivity.this, "Leaves Panel is open", Toast.LENGTH_SHORT).show();
                         temp = new LeavesFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
+
                         break;
                     case R.id.logout:
-                        // checkUserExistence();
+                        try {
+                            logoutOperation();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
+
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
+    }
+
+    private void logoutOperation() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Logout Request")
+                .setMessage("Are you sure you want to Logout?")
+//                            .setView(R.layout.popup_window)
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        checkUserExistence();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 //    @Override
@@ -85,13 +121,44 @@ public class MainActivity extends AppCompatActivity {
     public void pendingCardView(View view) {
     }
 
+    private void checkUserExistence() {
+        UserSession userSession = new UserSession(getApplicationContext());
+        String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
+
+        if (ACCESS_TOKEN != null) {
+            LoginRequest loginRequest = new LoginRequest();
+            String sharedProfileName = "haccount";
+            SharedPreferences preferences = getSharedPreferences(sharedProfileName, Context.MODE_PRIVATE);
+            preferences.edit().remove("access_token").apply();
+            preferences.edit().remove(loginRequest.getEmail()).apply();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
-        }
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage("Are you sure you want to Exit?")
+//                            .setView(R.layout.popup_window)
 
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                            finish();
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+        }
     }
 }
