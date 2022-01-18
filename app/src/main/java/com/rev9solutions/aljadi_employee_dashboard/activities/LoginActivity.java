@@ -33,7 +33,7 @@ import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
-import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginResponse;
+import com.rev9solutions.aljadi_employee_dashboard.response.LoginResponse;
 import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 
@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setEmail(t1.getText().toString());
             loginRequest.setPassword(t2.getText().toString());
-            Call<LoginResponse> call = Controller.getInstance().getapi().verifyUser(loginRequest);
+            Call<LoginResponse> call = Controller.getInstance().getApi().verifyUser(loginRequest);
 
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
@@ -173,9 +173,21 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse loginResponse = response.body();
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                       Log.d("msg",String.valueOf(response.body().getData().getUser().getId())) ;
+                        UserSession userSession = new UserSession(getApplicationContext());
+                        userSession.SaveKeyValue("id",String.valueOf(response.body().getData().getUser().getId()));
+
+                        // saveData( id);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+//                                UserSession userSession = new UserSession(getApplicationContext());
+//                                ACCESS_TOKEN = userSession.GetKeyValue("access_token");
+//                                if (ACCESS_TOKEN != null) {
+//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
                                 new UserSession(getApplicationContext()).SaveCredentials(loginResponse.getData().getToken());
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
@@ -195,6 +207,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public static int saveData(int id) {
+        return id;
+    }
+
     @Override
 
     protected void onStart() {
@@ -206,7 +222,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
     }
 
     public void onBackPressed() {

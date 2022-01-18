@@ -1,4 +1,6 @@
-package com.rev9solutions.aljadi_employee_dashboard.LoginApiData;
+package com.rev9solutions.aljadi_employee_dashboard.response;
+
+import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.Data;
 
 public class LoginResponse {
     int status_code;

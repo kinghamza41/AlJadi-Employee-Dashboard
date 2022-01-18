@@ -19,7 +19,6 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
-
             android:contentDescription="@string/al_jadi_logo"
             android:src="@drawable/logo2" />
 
@@ -95,7 +94,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
-                            android:text="@string/StartEndTime"
+                            android:text="@string/arrival_time"
                             android:textSize="18sp"
                             android:textStyle="normal" />
 
@@ -160,13 +159,14 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/startEndTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvAbsent"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
-                            android:text="@string/arrival_time"
+                            android:text="@string/StartEndTime"
                             android:textSize="18sp"
                             android:textStyle="normal" />
 

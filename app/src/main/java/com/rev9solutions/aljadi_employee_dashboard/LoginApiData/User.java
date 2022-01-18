@@ -13,7 +13,7 @@ public class User {
     int generalShiftStartTime;
     int generalShiftEndTime;
     boolean allowedOvertime;
-    int sickLeaved;
+    int sickLeave;
     int compensatoryLeaves;
     int annualLeaves;
     int casualLeaves;
@@ -23,6 +23,10 @@ public class User {
     String deletedAt;
     String createdAt;
     String updatedAt;
+
+    public User() {
+
+    }
 
     public int getId() {
         return id;
@@ -120,12 +124,12 @@ public class User {
         this.allowedOvertime = allowedOvertime;
     }
 
-    public int getSickLeaved() {
-        return sickLeaved;
+    public int getSickLeave() {
+        return sickLeave;
     }
 
-    public void setSickLeaved(int sickLeaved) {
-        this.sickLeaved = sickLeaved;
+    public void setSickLeave(int sickLeave) {
+        this.sickLeave = sickLeave;
     }
 
     public int getCompensatoryLeaves() {

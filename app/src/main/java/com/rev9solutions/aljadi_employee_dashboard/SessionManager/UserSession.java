@@ -16,8 +16,6 @@ public class UserSession {
 
         SharedPreferences preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
         preferences.edit().putString(key, value).apply();
-
-
     }
 
     public String GetKeyValue(String key) {
@@ -29,7 +27,6 @@ public class UserSession {
     }
 
     public void SaveCredentials(String token) {
-
 
         SaveKeyValue("access_token", token);
 //return SaveCredentials(token);
