@@ -15,23 +15,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.HomeFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.LeavesFragment;
 import com.rev9solutions.aljadi_employee_dashboard.R;
-import com.rev9solutions.aljadi_employee_dashboard.response.StartEndTimeResponse;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;

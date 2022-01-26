@@ -1,66 +1,112 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
+import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
+import com.rev9solutions.aljadi_employee_dashboard.modal.LeavesModal;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LeavesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LeavesFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TextView total_leaves, pending_leaves, approved_leaves, rejected_leaves, mid;
+    ProgressBar total_leaves_pb, pending_leaves_pb, approved_rejected_pb;
+    CardView applyForLeave;
 
     public LeavesFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LeavesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LeavesFragment newInstance(String param1, String param2) {
-        LeavesFragment fragment = new LeavesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_leaves, container, false);
+        View v = inflater.inflate(R.layout.fragment_leaves, container, false);
+        total_leaves = v.findViewById(R.id.total_leaves);
+        pending_leaves = v.findViewById(R.id.pending_leaves);
+        approved_leaves = v.findViewById(R.id.approved_leaves);
+        rejected_leaves = v.findViewById(R.id.rejected_leaves);
+        mid = v.findViewById(R.id.mid);
+        total_leaves_pb = v.findViewById(R.id.total_leaves_pb);
+        pending_leaves_pb = v.findViewById(R.id.pending_leaves_pb);
+        approved_rejected_pb = v.findViewById(R.id.approved_rejected_pb);
+        applyForLeave = v.findViewById(R.id.applyForLeave);
+
+        UserSession userSession = new UserSession(getContext());
+        Log.v("msg2", userSession.GetKeyValue("id"));
+        String id = userSession.GetKeyValue("id");
+
+        Call<LeavesModal> call4 = Controller.getInstance().getApi().leavesModal(id);
+        call4.enqueue(new Callback<LeavesModal>() {
+            @Override
+            public void onResponse(@NonNull Call<LeavesModal> call, @NonNull Response<LeavesModal> response) {
+                assert response.body() != null;
+                if (response.body().getStatusCode() == 200) {
+                    Log.v("msg", String.valueOf(response.body().getData().getTotalLeaves()));
+                    total_leaves_pb.setVisibility(View.GONE);
+                    pending_leaves_pb.setVisibility(View.GONE);
+                    approved_rejected_pb.setVisibility(View.GONE);
+                    total_leaves.setText(String.valueOf(response.body().getData().getTotalLeaves()));
+                    pending_leaves.setText(String.valueOf(response.body().getData().getPendingLeaves()));
+                    approved_leaves.setText(String.valueOf(response.body().getData().getApprovedLeaves()));
+                    mid.setVisibility(View.VISIBLE);
+                    rejected_leaves.setText(String.valueOf(response.body().getData().getRejectedLeaves()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LeavesModal> call, @NonNull Throwable t) {
+                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        applyForLeave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+                View dialogView = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.fragment_leaves, null);
+                EditText editText;
+                AppCompatButton button;
+//                editText = dialogView.findViewById(R.id.et_rejection);
+//                button = dialogView.findViewById(R.id.reject_btn);
+                builder.setTitle("Reason for Rejection");
+                builder.setView(dialogView);
+                builder.setCancelable(true);
+                final AlertDialog dialog = builder.create();
+            }
+        });
+
+
+        return v;
+    }
+
+    private void applyForLeave() {
+
     }
 }

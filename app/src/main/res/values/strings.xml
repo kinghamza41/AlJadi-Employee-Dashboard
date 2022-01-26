@@ -42,4 +42,5 @@
     <string name="apply_for_leaves">Apply for Leaves</string>
     <string name="payroll">Payroll</string>
     <string name="payroll_config">Payroll Config</string>
+    <string name="mid">/</string>
 </resources>

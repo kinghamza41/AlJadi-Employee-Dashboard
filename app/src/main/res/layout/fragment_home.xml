@@ -62,35 +62,71 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/white_circle">
+                            android:layout_marginTop="7dp"
+                            >
 
                             <ProgressBar
 
-                                android:id="@+id/presentPB"
+                                android:id="@+id/arrivalTimePB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
                                 android:indeterminateDrawable="@drawable/white_circle"
                                 tools:ignore="TooDeepLayout" />
 
+                            <ImageView
+                                android:id="@+id/imgOnline"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="50dp"
+                                android:src="@drawable/ic_online"
+                                android:visibility="gone"
+                                tools:ignore="ContentDescription" />
+                            <ImageView
+                                android:id="@+id/imgOffline"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="100dp"
+                                android:src="@drawable/ic_offline"
+                                android:visibility="gone"
+                                tools:ignore="ContentDescription" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <!--                            <de.hdodenhof.circleimageview.CircleImageView-->
+                            <!--                                android:id="@+id/profileImage"-->
+                            <!--                                android:layout_width="96dp"-->
+                            <!--                                android:layout_height="96dp"-->
+
+                            <!--                                app:civ_border_color="#000"-->
+                            <!--                                app:civ_border_width="2dp"-->
+                            <!--                                tools:ignore="MissingClass" />-->
+
+
+
+
                         </RelativeLayout>
 
                         <TextView
-                            android:id="@+id/tvPresent"
+                            android:id="@+id/arrivalTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:text=""
-                            android:textSize="30sp"
+                            android:textSize="25sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tvPresent"
+                            android:layout_below="@id/arrivalTime"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
@@ -139,7 +175,7 @@
 
                             <ProgressBar
 
-                                android:id="@+id/absentPB"
+                                android:id="@+id/startEndTimePB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
@@ -147,29 +183,72 @@
 
                         </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/tvAbsent"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/startEndTimeLayout"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text=""
-                            android:textSize="30sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
-                        <TextView
-                            android:id="@+id/startEndTime"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/startTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/endTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/startEndTimeLayout2"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tvAbsent"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text="@string/StartEndTime"
-                            android:textSize="18sp"
-                            android:textStyle="normal" />
+                            android:layout_below="@id/startEndTimeLayout"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/start_time"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="20dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="@string/end_time"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -209,7 +288,7 @@
                             android:background="@drawable/white_circle">
 
                             <ProgressBar
-                                android:id="@+id/pendingPB"
+                                android:id="@+id/workingHoursPB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
@@ -218,20 +297,20 @@
                         </RelativeLayout>
 
                         <TextView
-                            android:id="@+id/tvPending"
+                            android:id="@+id/workingHours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:text=""
-                            android:textSize="30sp"
+                            android:textSize="25sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tvPending"
+                            android:layout_below="@id/workingHours"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
@@ -244,78 +323,79 @@
 
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="135dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardLeavesToday"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:onClick="leavesTodayCardView"
-                        android:orientation="vertical"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
-                        tools:ignore="UsingOnClickInXml">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardLeavesToday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:onClick="leavesTodayCardView"
+                    android:orientation="vertical"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    tools:ignore="UsingOnClickInXml">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/white_circle">
 
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="10dp"
-                                android:background="@drawable/white_circle">
+                            <ProgressBar
 
-                                <ProgressBar
-
-                                    android:id="@+id/onLeavesPB"
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:indeterminate="true"
-                                    android:indeterminateDrawable="@drawable/white_circle" />
-
-                            </RelativeLayout>
-
-                            <TextView
-                                android:id="@+id/tvTodayLeaves"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:text=""
-                                android:textSize="30sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/tvTodayLeaves"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/salary"
-                                android:textSize="18sp"
-                                android:textStyle="normal" />
-
+                                android:id="@+id/onLeavesPB"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:indeterminate="true"
+                                android:indeterminateDrawable="@drawable/white_circle" />
 
                         </RelativeLayout>
 
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvTodayLeaves"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:text=""
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvTodayLeaves"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/salary"
+                            android:textSize="18sp"
+                            android:textStyle="normal" />
+
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
         </LinearLayout>
+
+    </LinearLayout>
 
 
 </FrameLayout>

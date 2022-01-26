@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.LeavesFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -25,6 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="135dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="horizontal">
@@ -61,7 +62,7 @@
 
                         <ProgressBar
 
-                            android:id="@+id/presentPB"
+                            android:id="@+id/total_leaves_pb"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:indeterminate="true"
@@ -71,20 +72,20 @@
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/tvPresent"
+                        android:id="@+id/total_leaves"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:text=""
-                        android:textSize="30sp"
+                        android:textSize="25sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tvPresent"
+                        android:layout_below="@id/total_leaves"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
@@ -126,7 +127,7 @@
 
                         <ProgressBar
 
-                            android:id="@+id/absentPB"
+                            android:id="@+id/pending_leaves_pb"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:indeterminate="true"
@@ -135,20 +136,20 @@
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/tvAbsent"
+                        android:id="@+id/pending_leaves"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:text=""
-                        android:textSize="30sp"
+                        android:textSize="25sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tvAbsent"
+                        android:layout_below="@id/pending_leaves"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
@@ -196,7 +197,7 @@
 
                         <ProgressBar
 
-                            android:id="@+id/pendingPB"
+                            android:id="@+id/approved_rejected_pb"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:indeterminate="true"
@@ -204,21 +205,45 @@
 
                     </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/tvPending"
+                    <LinearLayout
+                        android:id="@+id/approved_rejected_leaves_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text=""
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:id="@+id/approved_leaves"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:text=""
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/mid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:text="@string/mid"
+                            android:textSize="25sp"
+                            android:visibility="invisible"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/rejected_leaves"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:text=""
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tvPending"
+                        android:layout_below="@id/approved_rejected_leaves_layout"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
@@ -232,7 +257,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardLeavesToday"
+                android:id="@+id/applyForLeave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -242,48 +267,20 @@
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
-                android:onClick="leavesTodayCardView"
+                android:onClick="applyForLeave"
                 android:orientation="vertical"
                 app:cardElevation="5dp"
                 tools:ignore="UsingOnClickInXml">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="97dp">
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/white_circle">
-
-                        <ProgressBar
-
-                            android:id="@+id/onLeavesPB"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/white_circle" />
-
-                    </RelativeLayout>
-
-                    <TextView
-                        android:id="@+id/tvTodayLeaves"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text=""
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tvTodayLeaves"
-                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:text="@string/apply_for_leaves"
