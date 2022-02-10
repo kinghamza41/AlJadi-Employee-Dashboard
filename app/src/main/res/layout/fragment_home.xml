@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context=".fragments.HomeFragment">
-
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageView"
@@ -22,10 +18,43 @@
             android:contentDescription="@string/al_jadi_logo"
             android:src="@drawable/logo2" />
 
+        <TextView
+            android:id="@+id/checkedIN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/checkedOUT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/companyDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:layoutDirection="ltr"
+            android:scrollbarStyle="insideInset"
+            android:spinnerMode="dropdown"
+            android:visibility="visible" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
@@ -36,7 +65,6 @@
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
-
                     android:id="@+id/cardPresent"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -48,73 +76,29 @@
                     android:onClick="presentCardView"
                     android:orientation="vertical"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    tools:ignore="UsingOnClickInXml">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
-
                         android:id="@+id/layout1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <RelativeLayout
-
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="7dp"
-                            >
+                            android:layout_marginTop="7dp">
 
                             <ProgressBar
-
-                                android:id="@+id/arrivalTimePB"
+                                android:id="@+id/checkIn_out_PB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
-                                android:indeterminateDrawable="@drawable/white_circle"
-                                tools:ignore="TooDeepLayout" />
-
-                            <ImageView
-                                android:id="@+id/imgOnline"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginEnd="50dp"
-                                android:src="@drawable/ic_online"
-                                android:visibility="gone"
-                                tools:ignore="ContentDescription" />
-                            <ImageView
-                                android:id="@+id/imgOffline"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginEnd="100dp"
-                                android:src="@drawable/ic_offline"
-                                android:visibility="gone"
-                                tools:ignore="ContentDescription" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            tools:ignore="UseCompoundDrawables">
-
-                            <!--                            <de.hdodenhof.circleimageview.CircleImageView-->
-                            <!--                                android:id="@+id/profileImage"-->
-                            <!--                                android:layout_width="96dp"-->
-                            <!--                                android:layout_height="96dp"-->
-
-                            <!--                                app:civ_border_color="#000"-->
-                            <!--                                app:civ_border_width="2dp"-->
-                            <!--                                tools:ignore="MissingClass" />-->
-
-
-
-
+                                android:indeterminateDrawable="@drawable/white_circle" />
                         </RelativeLayout>
 
                         <TextView
-                            android:id="@+id/arrivalTime"
+                            android:id="@+id/work_started"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
@@ -123,20 +107,34 @@
                             android:textSize="25sp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/checkIn_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/arrivalTime"
+                            android:layout_below="@+id/work_started"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
-                            android:text="@string/arrival_time"
+                            android:background="@color/main_background"
+                            android:text="Check-In/Check-out"
                             android:textSize="18sp"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:visibility="invisible" />
 
-
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/check_out_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/work_started"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/main_background"
+                            android:text="Check-In/Check-out"
+                            android:textSize="18sp"
+                            android:textStyle="normal"
+                            android:visibility="invisible" />
                     </RelativeLayout>
-
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -150,7 +148,6 @@
                     android:id="@+id/cardAbsent"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
                     android:layout_weight="1"
                     android:clickable="true"
                     android:focusable="true"
@@ -159,8 +156,7 @@
                     android:onClick="absentCardView"
                     android:orientation="vertical"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    tools:ignore="UsingOnClickInXml">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -174,13 +170,11 @@
                             android:background="@drawable/white_circle">
 
                             <ProgressBar
-
                                 android:id="@+id/startEndTimePB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
                                 android:indeterminateDrawable="@drawable/white_circle" />
-
                         </RelativeLayout>
 
                         <LinearLayout
@@ -222,7 +216,7 @@
                             android:id="@+id/startEndTimeLayout2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/startEndTimeLayout"
+                            android:layout_below="@+id/startEndTimeLayout"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -250,9 +244,7 @@
                                 android:textStyle="normal" />
                         </LinearLayout>
                     </RelativeLayout>
-
                 </androidx.cardview.widget.CardView>
-
             </LinearLayout>
 
             <LinearLayout
@@ -273,8 +265,7 @@
                     android:onClick="pendingCardView"
                     android:orientation="vertical"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    tools:ignore="UsingOnClickInXml">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -293,34 +284,74 @@
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
                                 android:indeterminateDrawable="@drawable/white_circle" />
-
                         </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/workingHours"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/workingHoursLayout"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text=""
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/total_working_hours"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/today_working_hours"
+                                android:layout_width="177dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/workingHours"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text="@string/working_hours"
-                            android:textSize="18sp"
-                            android:textStyle="normal" />
+                            android:layout_below="@+id/workingHoursLayout"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/total_working_hours"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
 
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="@string/today_working_hours"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
                     </RelativeLayout>
-
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -342,8 +373,7 @@
                     android:onClick="leavesTodayCardView"
                     android:orientation="vertical"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    tools:ignore="UsingOnClickInXml">
+                    app:cardElevation="5dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -357,13 +387,11 @@
                             android:background="@drawable/white_circle">
 
                             <ProgressBar
-
                                 android:id="@+id/onLeavesPB"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:indeterminate="true"
                                 android:indeterminateDrawable="@drawable/white_circle" />
-
                         </RelativeLayout>
 
                         <TextView
@@ -380,22 +408,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tvTodayLeaves"
+                            android:layout_below="@+id/tvTodayLeaves"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:text="@string/salary"
                             android:textSize="18sp"
                             android:textStyle="normal" />
-
-
                     </RelativeLayout>
-
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
-
 </FrameLayout>

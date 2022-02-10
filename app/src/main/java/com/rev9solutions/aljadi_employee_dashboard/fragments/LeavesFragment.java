@@ -61,8 +61,9 @@ public class LeavesFragment extends Fragment {
         UserSession userSession = new UserSession(getContext());
         Log.v("msg2", userSession.GetKeyValue("id"));
         String id = userSession.GetKeyValue("id");
+        String ACCESS_TOKEN = userSession.GetKeyValue("token");
 
-        Call<LeavesModal> call4 = Controller.getInstance().getApi().leavesModal(id);
+        Call<LeavesModal> call4 = Controller.getInstance().getApi().leavesModal(id, "Bearer " + ACCESS_TOKEN);
         call4.enqueue(new Callback<LeavesModal>() {
             @Override
             public void onResponse(@NonNull Call<LeavesModal> call, @NonNull Response<LeavesModal> response) {

@@ -43,4 +43,6 @@
     <string name="payroll">Payroll</string>
     <string name="payroll_config">Payroll Config</string>
     <string name="mid">/</string>
+    <string name="total_working_hours">Total Working Hours</string>
+    <string name="today_working_hours">Today Working Hours</string>
 </resources>
