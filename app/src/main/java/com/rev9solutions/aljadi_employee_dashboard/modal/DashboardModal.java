@@ -246,6 +246,17 @@ public class DashboardModal {
         @SerializedName("total_working_hours")
         @Expose
         private String totalWorkingHours;
+        @SerializedName("salary")
+        @Expose
+        private float salary;
+
+        public float getSalary() {
+            return salary;
+        }
+
+        public void setSalary(float salary) {
+            this.salary = salary;
+        }
 
         public Data() {
         }

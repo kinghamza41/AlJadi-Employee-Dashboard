@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,12 +26,14 @@ import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.HomeFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.LeavesFragment;
 import com.rev9solutions.aljadi_employee_dashboard.R;
+import com.rev9solutions.aljadi_employee_dashboard.fragments.PayrolFragment;
 
 public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
-        navigationView.setCheckedItem(R.id.Home);
+         getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+         navigationView.setCheckedItem(R.id.Home);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             Fragment temp;
 
@@ -54,11 +59,26 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 switch (item.getItemId()) {
+
                     case R.id.Home:
 
+                        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                            @Override
+                            public void onRefresh() {
+//                                HomeFragment homeFragment = new HomeFragment();
+//                                homeFragment.dashboardModalRefresh();
+//                                swipeContainer.setRefreshing(false);
+                                //  Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                                android.R.color.holo_green_light,
+                                android.R.color.holo_orange_light,
+                                android.R.color.holo_red_light);
                         Toast.makeText(MainActivity.this, "Home Panel is open", Toast.LENGTH_SHORT).show();
                         temp = new HomeFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
+
                         break;
 
                     case R.id.Leaves:
@@ -68,7 +88,11 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
 
                         break;
+                    case R.id.payroll:
+                        temp = new PayrolFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
 
+                        break;
                     case R.id.logout:
 
                         try {
@@ -78,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + item.getItemId());
                 }
 
                 drawerLayout.closeDrawer(GravityCompat.START);

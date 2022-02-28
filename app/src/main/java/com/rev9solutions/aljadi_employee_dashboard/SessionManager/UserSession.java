@@ -3,12 +3,12 @@ package com.rev9solutions.aljadi_employee_dashboard.SessionManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class UserSession {
+public  class UserSession {
     private final String sharedprofileName = "haccount";
     private final Context _context;
     private UserSession instance;
 
-    public UserSession(Context context) {
+    public  UserSession(Context context) {
         this._context = context;
     }
 

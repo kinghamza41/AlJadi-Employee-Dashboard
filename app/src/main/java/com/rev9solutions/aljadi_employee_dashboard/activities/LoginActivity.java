@@ -138,10 +138,12 @@ public class LoginActivity extends AppCompatActivity {
     public void processLogin() {
         String email = t1.getText().toString();
         String password = t2.getText().toString();
+
         if (email.isEmpty()) {
 
             t1.setError("Enter is Required");
             t1.requestFocus();
+          //  dialog.cancel();
             return;
         }
 
@@ -151,36 +153,37 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         if (password.isEmpty()) {
-
+           // dialog.cancel();
             t2.setError("Password Required");
             t2.requestFocus();
 
-        } else {
-            dialog = new ProgressDialog(this);
-            dialog.setMessage("Please wait...");
-            dialog.setCancelable(false);
-            dialog.show();
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.setEmail(t1.getText().toString());
-            loginRequest.setPassword(t2.getText().toString());
-            Call<LoginResponse> call = Controller.getInstance().getApi().verifyUser(loginRequest);
+        }
+        //  dialog.cancel();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Please wait...");
+        dialog.setCancelable(true);
+        dialog.show();
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(t1.getText().toString());
+        loginRequest.setPassword(t2.getText().toString());
+        Call<LoginResponse> call = Controller.getInstance().getApi().verifyUser(loginRequest);
 
-            call.enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(@NotNull Call<LoginResponse> call, @NotNull Response<LoginResponse> response) {
-                    assert response.body() != null;
-                    if (response.body().getStatusCode() == 200) {
-                        LoginResponse loginResponse = response.body();
-                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                       Log.d("msg",String.valueOf(response.body().getData().getUser().getId())) ;
-                        UserSession userSession = new UserSession(getApplicationContext());
-                        userSession.SaveKeyValue("id",String.valueOf(response.body().getData().getUser().getId()));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<LoginResponse> call, @NotNull Response<LoginResponse> response) {
+                assert response.body() != null;
+                if (response.body().getStatusCode() == 200) {
+                    LoginResponse loginResponse = response.body();
+                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    Log.d("msg", String.valueOf(response.body().getData().getUser().getId()));
+                    UserSession userSession = new UserSession(getApplicationContext());
+                    userSession.SaveKeyValue("id", String.valueOf(response.body().getData().getUser().getId()));
 
-                        // saveData( id);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
+                    // saveData( id);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 //                                UserSession userSession = new UserSession(getApplicationContext());
 //                                ACCESS_TOKEN = userSession.GetKeyValue("access_token");
 //                                if (ACCESS_TOKEN != null) {
@@ -188,24 +191,24 @@ public class LoginActivity extends AppCompatActivity {
 //                                    startActivity(intent);
 //                                    finish();
 //                                }
-                                new UserSession(getApplicationContext()).SaveCredentials(loginResponse.getData().getToken());
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                            }
-                        }, 300);
-                    } else if (response.body().getStatusCode() != 200) {
-                        LoginResponse loginResponse = response.body();
-                        Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                            new UserSession(getApplicationContext()).SaveCredentials(loginResponse.getData().getToken());
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }, 300);
+                } else if (response.body().getStatusCode() != 200) {
+                    LoginResponse loginResponse = response.body();
+                    Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_LONG).show();
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+            @Override
+            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                Toast.makeText(LoginActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
 
     public static int saveData(int id) {
         return id;

@@ -32,7 +32,7 @@ public interface ApiSet {
 
     @POST("employee/check/out")
     @Headers({"Content-Type: application/json"})
-    Call<CheckOutModal> checkOutModal(@Query("company_id") String str, @Header("Authorization") String str2);
+    Call<CheckOutModal> checkOutModal( @Header("Authorization") String str2);
 
     @GET("employee/dashboard")
     @Headers({"Content-Type: application/json"})
