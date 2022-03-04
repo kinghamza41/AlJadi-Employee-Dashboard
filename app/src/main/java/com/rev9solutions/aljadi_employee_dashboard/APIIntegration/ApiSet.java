@@ -42,6 +42,18 @@ public interface ApiSet {
     @Headers({"Content-Type: application/json"})
     Call<LeavesModal> leavesModal(@Query("id") String str, @Header("Authorization") String str2);
 
+    @POST("employee/leaves")
+    @Headers({"Content-Type: application/json"})
+    Call<ApplyForLeave> applyForLeaveModal(@Query("leave_type") String leave_type,
+                                           @Query("reason_for_leave") String reason_for_leave,
+                                           @Query("leave_duration_type") String leave_duration_type,
+                                           @Query("leave_duration") String leave_duration,
+                                           @Query("half_leave_day") String half_leave_day,
+                                           @Query("full_leave_one_day") String full_leave_one_day,
+                                           @Query("start_date") String start_date,
+                                           @Query("end_date") String end_date,
+                                           @Header("Authorization") String str2);
+
     @POST("employee/login")
     Call<LoginResponse> verifyUser(@Body LoginRequest loginRequest);
 

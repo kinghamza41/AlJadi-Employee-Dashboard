@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Controller {
     String ACCESS_TOKEN;
-    private static final String url = "https://dev.aljadiss.com/api/v1/";
+        private static final String url = "https://dev.aljadiss.com/api/v1/";
 
     private static Controller clientObj;
 
@@ -42,9 +42,9 @@ public class Controller {
                 .setLenient()
                 .create();
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor).build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(url)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="leaveType">
+        <item>Please Select Leave Type</item>
+        <item>Sick Leave</item>
+        <item>Compensatory Leave</item>
+        <item>Annual Leave</item>
+        <item>Casual Leave</item>
+
+    </array>
+    <array name="timePeriod">
+        <item>Please Select Option</item>
+        <item>Half Leave</item>
+        <item>Full Leave</item>
+    </array>
+    <array name="leaveDuration">
+        <item>Please Select Leave Duration</item>
+        <item>Only One Day</item>
+        <item>Multiple Days</item>
+    </array>
+    <array name="company">
+        <item>Full Leave</item>
+        <item>Please Select Option</item>
+    </array>
+</resources>

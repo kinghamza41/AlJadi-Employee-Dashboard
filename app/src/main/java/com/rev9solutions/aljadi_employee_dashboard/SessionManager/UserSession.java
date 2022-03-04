@@ -18,7 +18,7 @@ public  class UserSession {
         preferences.edit().putString(key, value).apply();
     }
 
-    public String GetKeyValue(String key) {
+    public  String GetKeyValue(String key) {
 
         SharedPreferences preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
         return preferences.getString(key, null);

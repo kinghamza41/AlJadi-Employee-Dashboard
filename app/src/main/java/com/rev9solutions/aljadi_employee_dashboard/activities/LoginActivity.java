@@ -6,12 +6,16 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.NotificationCompat;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,77 +69,91 @@ public class LoginActivity extends AppCompatActivity {
         tv = findViewById(R.id.tv);
         saveBtn = findViewById(R.id.savebtn);
         //checkUserExistence();
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                processLogin();
-            }
-        });
+//        saveBtn.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View v) {
+//                if (!isConnected(v)) {
+//                    showCustomDialog();
+//                }
+//
+//            }
+//        });
+
+
         PusherOptions options = new PusherOptions();
         options.setCluster("ap2");
 
-        Pusher pusher = new Pusher("2d100a8c74ff5472530d", options);
+//        Pusher pusher = new Pusher("2d100a8c74ff5472530d", options);
+//
+//        pusher.connect(new ConnectionEventListener() {
+//            @Override
+//            public void onConnectionStateChange(ConnectionStateChange change) {
+//                Log.i("Pusher", "State changed from " + change.getPreviousState() +
+//                        " to " + change.getCurrentState());
+//            }
+//
+//            @Override
+//            public void onError(String message, String code, Exception e) {
+//                Log.i("Pusher", "There was a problem connecting! " +
+//                        "\ncode: " + code +
+//                        "\nmessage: " + message +
+//                        "\nException: " + e
+//                );
+//            }
+//        }, ConnectionState.ALL);
+//
+//        Channel channel = pusher.subscribe("my-channel");
+//
+//        channel.bind("my-event", new SubscriptionEventListener() {
+//            @Override
+//            public void onEvent(PusherEvent event) {
+//                String data = event.getData();
+//                String nama = "";
+//                try {
+//                    JSONObject jsonObject = new JSONObject(data);
+//                    nama = jsonObject.getString("name");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                mBuilder = new NotificationCompat.Builder(LoginActivity.this);
+//                mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+//                mBuilder.setContentTitle("Al Jadi Notifications Test")
+//                        .setContentText(nama)
+//                        .setAutoCancel(false)
+//                        .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+//                mNotificationManager = (NotificationManager) LoginActivity.this
+//                        .getSystemService(Context.NOTIFICATION_SERVICE);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    int importance = NotificationManager.IMPORTANCE_HIGH;
+//                    NotificationChannel notificationChannel = new NotificationChannel
+//                            (NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+//                    notificationChannel.enableLights(true);
+//                    notificationChannel.setLightColor(Color.RED);
+//                    notificationChannel.enableVibration(true);
+//                    notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+//
+//                    assert mNotificationManager != null;
+//                    mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+//                    mNotificationManager.createNotificationChannel(notificationChannel);
+//                }
+//                assert mNotificationManager != null;
+//                mNotificationManager.notify(0, mBuilder.build());
+//            }
+//        });
+    }
 
-        pusher.connect(new ConnectionEventListener() {
-            @Override
-            public void onConnectionStateChange(ConnectionStateChange change) {
-                Log.i("Pusher", "State changed from " + change.getPreviousState() +
-                        " to " + change.getCurrentState());
-            }
-
-            @Override
-            public void onError(String message, String code, Exception e) {
-                Log.i("Pusher", "There was a problem connecting! " +
-                        "\ncode: " + code +
-                        "\nmessage: " + message +
-                        "\nException: " + e
-                );
-            }
-        }, ConnectionState.ALL);
-
-        Channel channel = pusher.subscribe("my-channel");
-
-        channel.bind("my-event", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                String data = event.getData();
-                String nama = "";
-                try {
-                    JSONObject jsonObject = new JSONObject(data);
-                    nama = jsonObject.getString("name");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                mBuilder = new NotificationCompat.Builder(LoginActivity.this);
-                mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                mBuilder.setContentTitle("Al Jadi Notifications Test")
-                        .setContentText(nama)
-                        .setAutoCancel(false)
-                        .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-                mNotificationManager = (NotificationManager) LoginActivity.this
-                        .getSystemService(Context.NOTIFICATION_SERVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    int importance = NotificationManager.IMPORTANCE_HIGH;
-                    NotificationChannel notificationChannel = new NotificationChannel
-                            (NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
-                    notificationChannel.enableLights(true);
-                    notificationChannel.setLightColor(Color.RED);
-                    notificationChannel.enableVibration(true);
-                    notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-
-                    assert mNotificationManager != null;
-                    mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
-                    mNotificationManager.createNotificationChannel(notificationChannel);
-                }
-                assert mNotificationManager != null;
-                mNotificationManager.notify(0, mBuilder.build());
-            }
-        });
+    public void processLogin(View view) {
+        if (!isConnected(this)) {
+            showCustomDialog();
+        } else {
+            processLogin();
+        }
     }
 
     public void processLogin() {
+
         String email = t1.getText().toString();
         String password = t2.getText().toString();
 
@@ -143,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
 
             t1.setError("Enter is Required");
             t1.requestFocus();
-          //  dialog.cancel();
+            //  dialog.cancel();
             return;
         }
 
@@ -153,15 +171,20 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         if (password.isEmpty()) {
-           // dialog.cancel();
+            // dialog.cancel();
             t2.setError("Password Required");
             t2.requestFocus();
 
         }
         //  dialog.cancel();
+        loginResponse();
+
+    }
+
+    private void loginResponse() {
         dialog = new ProgressDialog(this);
         dialog.setMessage("Please wait...");
-        dialog.setCancelable(true);
+        dialog.setCancelable(false);
         dialog.show();
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail(t1.getText().toString());
@@ -179,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("msg", String.valueOf(response.body().getData().getUser().getId()));
                     UserSession userSession = new UserSession(getApplicationContext());
                     userSession.SaveKeyValue("id", String.valueOf(response.body().getData().getUser().getId()));
-
+                    userSession.SaveKeyValue("token", response.body().getData().getToken());
                     // saveData( id);
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -199,6 +222,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (response.body().getStatusCode() != 200) {
                     LoginResponse loginResponse = response.body();
                     Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
                 }
             }
 
@@ -207,6 +231,34 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void showCustomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setMessage("Please connect to the internet to proceed further")
+                .setCancelable(false)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //   loginResponse();
+                        //  dialog.dismiss();
+                    }
+                }).show();
+
+    }
+
+    private boolean isConnected(LoginActivity loginActivity) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) loginActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return (wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected());
+
     }
 
 
@@ -230,4 +282,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
+
 }

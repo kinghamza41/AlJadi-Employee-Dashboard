@@ -1,25 +1,29 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
+import com.rev9solutions.aljadi_employee_dashboard.activities.ApplyForLeaveActivity;
 import com.rev9solutions.aljadi_employee_dashboard.modal.LeavesModal;
 
 import retrofit2.Call;
@@ -58,11 +62,40 @@ public class LeavesFragment extends Fragment {
         approved_rejected_pb = v.findViewById(R.id.approved_rejected_pb);
         applyForLeave = v.findViewById(R.id.applyForLeave);
 
+
+        if (!isConnected(LeavesFragment.this)) {
+            showCustomDialog();
+        } else {
+            leavesModalCall();
+
+            applyForLeave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+//                    View dialogView = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.fragment_leaves, null);
+//                    EditText editText;
+//                    AppCompatButton button;
+////                editText = dialogView.findViewById(R.id.et_rejection);
+////                button = dialogView.findViewById(R.id.reject_btn);
+//                    builder.setTitle("Reason for Rejection");
+//                    builder.setView(dialogView);
+//                    builder.setCancelable(true);
+//                    final AlertDialog dialog = builder.create();
+                    Intent intent = new Intent(getContext(), ApplyForLeaveActivity.class);
+                    intent.putExtra("data", "some data" );
+                    startActivity(intent);
+                }
+            });
+
+        }
+        return v;
+    }
+
+    private void leavesModalCall() {
         UserSession userSession = new UserSession(getContext());
         Log.v("msg2", userSession.GetKeyValue("id"));
         String id = userSession.GetKeyValue("id");
         String ACCESS_TOKEN = userSession.GetKeyValue("token");
-
         Call<LeavesModal> call4 = Controller.getInstance().getApi().leavesModal(id, "Bearer " + ACCESS_TOKEN);
         call4.enqueue(new Callback<LeavesModal>() {
             @Override
@@ -83,28 +116,44 @@ public class LeavesFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<LeavesModal> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Log.v("leavesFragmentError", t.getLocalizedMessage());
 
             }
         });
-        applyForLeave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-                View dialogView = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.fragment_leaves, null);
-                EditText editText;
-                AppCompatButton button;
-//                editText = dialogView.findViewById(R.id.et_rejection);
-//                button = dialogView.findViewById(R.id.reject_btn);
-                builder.setTitle("Reason for Rejection");
-                builder.setView(dialogView);
-                builder.setCancelable(true);
-                final AlertDialog dialog = builder.create();
-            }
-        });
+    }
 
+    private void showCustomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Please connect to the internet to proceed further")
+                .setCancelable(false)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //   loginResponse();
+                        //  dialog.dismiss();
+                    }
+                }).show();
 
-        return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        leavesModalCall();
+    }
+
+    private boolean isConnected(LeavesFragment loginActivity) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) loginActivity.requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return (wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected());
+
     }
 
     private void applyForLeave() {

@@ -45,4 +45,16 @@
     <string name="mid">/</string>
     <string name="total_working_hours">Total Working Hours</string>
     <string name="today_working_hours">Today Working Hours</string>
+    <string name="check_in_check_out">Check-In/Check-out</string>
+    <string name="check_in_check_out1">Check-In/Check-out</string>
+    <string name="leave_type">Leave Type</string>
+    <string name="please_enter_reason_for_leave">Please Write Reason for Leave</string>
+    <string name="time_period">Time Period</string>
+    <string name="prompt">Select</string>
+    <string name="please_select_date">Please Select Date</string>
+    <string name="apply">Apply</string>
+    <string name="please_select_start_date">Please Select Start Date</string>
+    <string name="please_select_end_date">Please Select End Date</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
 </resources>

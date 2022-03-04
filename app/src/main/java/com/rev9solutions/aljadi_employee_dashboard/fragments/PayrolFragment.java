@@ -45,37 +45,37 @@ public class PayrolFragment extends Fragment {
 //        timerText = v.findViewById(R.id.timerText);
 //        startStopBtn = v.findViewById(R.id.startStopBtn);
         timer = new Timer();
-        startStopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (timeStarted == false) {
-                    timeStarted = true;
-                   // startStopBtn.setText("Stop");
-                    
-                    startTimer();
-                } else {
-                    timeStarted = false;
-                    // startStopBtn.setText("Start");
-                    timerTask.cancel();
-                }
-            }
-        });
-        return v;
-
-    }
-
-    private void startTimer() {
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-
-                time++;
-                //timerText.setText(getTimerText());
-            }
-        };
-        timer.scheduleAtFixedRate(timerTask,0,1000);
-
-    }
+//        startStopBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (timeStarted == false) {
+//                    timeStarted = true;
+//                   // startStopBtn.setText("Stop");
+//
+//                    startTimer();
+//                } else {
+//                    timeStarted = false;
+//                    // startStopBtn.setText("Start");
+//                    timerTask.cancel();
+//                }
+//            }
+//        });
+//        return v;
+//
+//    }
+//
+//    private void startTimer() {
+//        timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//                time++;
+//                //timerText.setText(getTimerText());
+//            }
+//        };
+//        timer.scheduleAtFixedRate(timerTask,0,1000);
+//
+//    }
 
 //    private String getTimerText() {
 //        int rounded = (int) Math.round(time);
@@ -89,4 +89,6 @@ public class PayrolFragment extends Fragment {
 //    private String formatTime(int seconds, int minutes, int hours) {
 //        return String.format("%02d",hours + " : " + String.format("%02d",minutes) + " : " + String.format("%02d",seconds));
 //    }
+        return v;
+    }
 }

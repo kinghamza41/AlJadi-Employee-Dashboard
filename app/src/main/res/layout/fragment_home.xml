@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -77,7 +77,6 @@
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        android:onClick="presentCardView"
                         android:orientation="vertical"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp">
@@ -120,7 +119,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginBottom="10dp"
                                 android:background="@color/main_background"
-                                android:text="Check-In/Check-out"
+                                android:text="@string/check_in_check_out"
                                 android:textSize="18sp"
                                 android:textStyle="normal"
                                 android:visibility="invisible" />
@@ -134,7 +133,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginBottom="10dp"
                                 android:background="@color/main_background"
-                                android:text="Check-In/Check-out"
+                                android:text="@string/check_in_check_out"
                                 android:textSize="18sp"
                                 android:textStyle="normal"
                                 android:visibility="invisible" />
@@ -157,7 +156,6 @@
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        android:onClick="absentCardView"
                         android:orientation="vertical"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -267,7 +265,6 @@
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        android:onClick="pendingCardView"
                         android:orientation="vertical"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -376,7 +373,6 @@
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        android:onClick="leavesTodayCardView"
                         android:orientation="vertical"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -427,7 +423,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
         </LinearLayout>
 
 </FrameLayout>

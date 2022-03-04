@@ -1,7 +1,10 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +31,7 @@ import android.widget.Toast;
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
+import com.rev9solutions.aljadi_employee_dashboard.activities.LoginActivity;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckInModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckOutModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
@@ -73,40 +78,58 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         this.checkOut_btn = (AppCompatButton) v.findViewById(R.id.check_out_btn);
         this.salaryTV = v.findViewById(R.id.salaryTV);
         this.salaryPB = v.findViewById(R.id.salaryPB);
-//        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeRefresh);
-////        this.ACCESS_TOKEN = new UserSession(getContext()).GetKeyValue("token");
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//        new Handler().postDelayed(new Runnable() {
 //            @Override
-//            public void onRefresh() {
-//                dashboardModal2();
+//            public void run() {
+//                dashboardModalRefresh();
+//
 //            }
-//        });
-//        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-//                android.R.color.holo_green_light,
-//                android.R.color.holo_orange_light,
-//                android.R.color.holo_red_light);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dashboardModalRefresh();
-
-            }
-        }, 1000);
+//        }, 1000);
         boolean connection = isNetworkAvailable();
         if (connection) {
-            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+            Log.v("msg", "success");
+           // Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
             //dashboardModal2();
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
 
         }
-        dashboardModal2();
-        checkInBtn();
-        checkOutBtn();
-
+        if (!isConnected(HomeFragment.this)) {
+            showCustomDialog();
+        }
+        else {
+            dashboardModal2();
+            checkInBtn();
+            checkOutBtn();
+        }
         return v;
     }
+    private boolean isConnected(HomeFragment loginActivity) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) loginActivity.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return (wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected());
 
+    }
+    private void showCustomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Please connect to the internet to proceed further")
+                .setCancelable(false)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //   loginResponse();
+                        //  dialog.dismiss();
+                    }
+                }).show();
+    }
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -236,14 +259,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //            });
     }
 
-    public void dashboardModal2() {
+    public  void dashboardModal2() {
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
-        try {
             Controller.getInstance().getApi().dashboardModal("Bearer " + ACCESS_TOKEN).enqueue(new Callback<DashboardModal>() {
 
 
-                public void onResponse(Call<DashboardModal> call, Response<DashboardModal> response) {
+                public void onResponse(@NonNull Call<DashboardModal> call, Response<DashboardModal> response) {
                     assert response.body() != null;
                     if (response.body().getStatusCode() == 200) {
                         ArrayList<String> company = new ArrayList<>();
@@ -253,12 +275,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             company.add(response.body().getData().getCompanies().get(i).getName());
                             c2.add(response.body().getData().getCompanies().get(i).getPivot().getCompanyId());
                         }
-                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, company);
-                        spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        ArrayAdapter<String> spinnerArrayAdapter= null;
+                        try {
+                             spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, company);
+                            spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        }
+                        catch (NullPointerException  ignored) {
+                        }
+
                         companyDropdown.setAdapter(spinnerArrayAdapter);
                         companyDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                                Toast.makeText(HomeFragment.this.getContext(), "clicked " + c2.get(position), Toast.LENGTH_LONG).show();
+                               // Toast.makeText(HomeFragment.this.getContext(), "clicked " + c2.get(position), Toast.LENGTH_LONG).show();
                                 userSession.SaveKeyValue("company_id2", String.valueOf(c2.get(position)));
                                 if (c2.get(position) >= 0) {
                                     dashboardModal();
@@ -274,12 +302,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
 
                 public void onFailure(@NonNull Call<DashboardModal> call, @NonNull Throwable t) {
-                    Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Log.v("dashboardCall", t.getLocalizedMessage());
                 }
             });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void dashboardModal() {
@@ -311,12 +337,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             checkIn_btn.setVisibility(View.GONE);
                             checkOut_btn.setVisibility(View.VISIBLE);
                             checkOut_btn.setText("CheckOut");
-
                             work_started.setText("Started");
                             checkedIN.setText("You checked in " + response.body().getData().getCheckInCompany().getName());
                             startTime.setText(response.body().getData().getStartTime());
                             salaryPB.setVisibility(View.GONE);
                             salaryTV.setText(String.valueOf(response.body().getData().getSalary()));
+                           // CountUpTimer.INTERVAL_MS();
 //                            Runnable timerRunnable = new Runnable() {
 //
 //                                @SuppressLint("DefaultLocale")
@@ -333,6 +359,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //                                }
 //                            };
                             today_working_hours.setText(response.body().getData().getTodayWorkingHours());
+
 
                         }
                         int checkOut1 = 1;
@@ -352,7 +379,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
 
                 public void onFailure(Call<DashboardModal> call, Throwable t) {
-                    Toast.makeText(HomeFragment.this.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                   Log.v("dashboardModalCall", t.getLocalizedMessage());
                 }
             });
         } catch (Exception e) {
@@ -379,6 +406,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        dashboardModal2();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         handler.removeCallbacks(runnable); //stop handler when activity not visible
@@ -393,7 +426,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             this.duration = durationMs;
         }
 
-        public abstract void onTick(int second);
+        public abstract  void onTick(int second);
 
         @Override
         public void onTick(long msUntilFinished) {

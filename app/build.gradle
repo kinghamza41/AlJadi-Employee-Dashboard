@@ -15,6 +15,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,6 +36,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     //noinspection GradleDependency
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:'
@@ -50,4 +52,5 @@ dependencies {
     implementation 'com.pusher:pusher-java-client:2.2.6'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'org.slf4j:slf4j-simple:1.6.1'
+    implementation "com.android.support:multidex:2.0.1"
 }
