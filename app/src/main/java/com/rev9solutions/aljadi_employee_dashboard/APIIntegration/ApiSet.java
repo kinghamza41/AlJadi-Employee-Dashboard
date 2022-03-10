@@ -22,9 +22,6 @@ import retrofit2.http.Query;
 
 public interface ApiSet {
 
-    @POST("employee/leaves")
-    @Headers({"Content-Type: application/json"})
-    Call<ApplyForLeave> applyForLeave(@Query("user_id") String str, @Query("leave_type") String str2, @Query("reason_for_leave") String str3, @Query("leave_duration_type") String str4, @Query("half_leave_day") String str5);
 
     @POST("employee/check/in")
     @Headers({"Content-Type: application/json"})
@@ -32,7 +29,7 @@ public interface ApiSet {
 
     @POST("employee/check/out")
     @Headers({"Content-Type: application/json"})
-    Call<CheckOutModal> checkOutModal( @Header("Authorization") String str2);
+    Call<CheckOutModal> checkOutModal(@Header("Authorization") String str2);
 
     @GET("employee/dashboard")
     @Headers({"Content-Type: application/json"})
@@ -42,7 +39,7 @@ public interface ApiSet {
     @Headers({"Content-Type: application/json"})
     Call<LeavesModal> leavesModal(@Query("id") String str, @Header("Authorization") String str2);
 
-    @POST("employee/leaves")
+    @POST("employee/apply/for/leave")
     @Headers({"Content-Type: application/json"})
     Call<ApplyForLeave> applyForLeaveModal(@Query("leave_type") String leave_type,
                                            @Query("reason_for_leave") String reason_for_leave,
@@ -52,11 +49,11 @@ public interface ApiSet {
                                            @Query("full_leave_one_day") String full_leave_one_day,
                                            @Query("start_date") String start_date,
                                            @Query("end_date") String end_date,
-                                           @Header("Authorization") String str2);
+                                           @Header("Authorization") String str5);
 
     @POST("employee/login")
     Call<LoginResponse> verifyUser(@Body LoginRequest loginRequest);
-
+//
 //    @Headers("Content-Type: application/json")
 //    @POST("employee/leaves")
 //    Call<LeavesResponse> leavesResponse(@Body int id);

@@ -199,11 +199,11 @@ public class LoginActivity extends AppCompatActivity {
                     LoginResponse loginResponse = response.body();
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    Log.d("msg", String.valueOf(response.body().getData().getUser().getId()));
+//                    Log.d("msg", String.valueOf(response.body().getData().getUser().getId()));
                     UserSession userSession = new UserSession(getApplicationContext());
                     userSession.SaveKeyValue("id", String.valueOf(response.body().getData().getUser().getId()));
+                    userSession.SaveKeyValue("email", String.valueOf(response.body().getData().getUser().getEmail()));
                     userSession.SaveKeyValue("token", response.body().getData().getToken());
-                    // saveData( id);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

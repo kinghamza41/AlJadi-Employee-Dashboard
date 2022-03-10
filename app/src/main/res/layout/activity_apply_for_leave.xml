@@ -71,8 +71,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
+                    android:focusableInTouchMode="true"
+                    android:clickable="true"
                     android:focusable="true"
                     android:minHeight="50dp"
+                    android:inputType="text"
                     tools:ignore="TextFields" />
 
                 <TextView

@@ -38,6 +38,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -55,8 +56,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
-    private SwipeRefreshLayout swipeContainer;
+    TextView userEmail;
     FusedLocationProviderClient fusedLocationProviderClient;
+    UserSession userSession = new UserSession(MainActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
-        // setupDrawerContent(navigationView);
-        //swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        userEmail = findViewById(R.id.uEmail);
+        String uEmail = userSession.GetKeyValue("email");
+//        userEmail.setText("dsfdsf");
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();

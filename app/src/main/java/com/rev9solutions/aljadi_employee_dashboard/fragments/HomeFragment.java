@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,16 +38,20 @@ import com.rev9solutions.aljadi_employee_dashboard.modal.CheckInModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckOutModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment {
     int apiDelayed = 1000;
-    TextView arrivalTime, startTime, today_working_hours, total_working_hours, work_started, checkedIN, checkedOUT, endTime, salaryTV;
+    TextView arrivalTime, startTime, total_working_hours, work_started, checkedIN, checkedOUT, endTime, salaryTV;
+    Chronometer chronometer;
     AppCompatButton checkIn_btn, checkOut_btn;
     Spinner companyDropdown;
     Handler handler = new Handler();
@@ -54,7 +60,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     ProgressBar startEndTimePB, workingHoursPB, checkInOutPB, salaryPB;
     private SwipeRefreshLayout swipeContainer;
     long startTime1 = 0;
+    SwipeRefreshLayout swipeRefreshLayout;
     Handler timerHandler = new Handler();
+    String currentTime;
+    SimpleDateFormat format;
+
 
     public HomeFragment() {
         //   this.dashboardModalRefresh();
@@ -63,11 +73,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+        View v2 = inflater.inflate(R.layout.activity_main, container, false);
         this.work_started = (TextView) v.findViewById(R.id.work_started);
         this.startTime = (TextView) v.findViewById(R.id.startTime);
         this.endTime = (TextView) v.findViewById(R.id.endTime);
         this.total_working_hours = (TextView) v.findViewById(R.id.total_working_hours);
-        this.today_working_hours = (TextView) v.findViewById(R.id.today_working_hours);
+        this.chronometer = (Chronometer) v.findViewById(R.id.today_working_hours);
         this.checkInOutPB = (ProgressBar) v.findViewById(R.id.checkIn_out_PB);
         this.startEndTimePB = (ProgressBar) v.findViewById(R.id.startEndTimePB);
         this.workingHoursPB = (ProgressBar) v.findViewById(R.id.workingHoursPB);
@@ -78,6 +89,26 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         this.checkOut_btn = (AppCompatButton) v.findViewById(R.id.check_out_btn);
         this.salaryTV = v.findViewById(R.id.salaryTV);
         this.salaryPB = v.findViewById(R.id.salaryPB);
+        swipeRefreshLayout = v.findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!isConnected(HomeFragment.this)) {
+                    showCustomDialog();
+                } else {
+                    dashboardModal2();
+                    dashboardModal();
+                }
+            }
+
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -88,7 +119,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         boolean connection = isNetworkAvailable();
         if (connection) {
             Log.v("msg", "success");
-           // Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
             //dashboardModal2();
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
@@ -96,14 +127,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
         if (!isConnected(HomeFragment.this)) {
             showCustomDialog();
-        }
-        else {
+        } else {
             dashboardModal2();
             checkInBtn();
             checkOutBtn();
         }
         return v;
     }
+
     private boolean isConnected(HomeFragment loginActivity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) loginActivity.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -111,6 +142,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         return (wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected());
 
     }
+
     private void showCustomDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Please connect to the internet to proceed further")
@@ -130,6 +162,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
                 }).show();
     }
+
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -155,8 +188,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             assert response.body() != null;
                             if (response.body().getStatusCode() == 200) {
                                 Log.v("checkIn", response.body().getMessage());
-//                                checkInOutPB.setVisibility(View.GONE);
-//                                startEndTimePB.setVisibility(View.GONE);
                                 work_started.setText("Ended");
                                 dashboardModal();
                             }
@@ -173,13 +204,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     public void checkInBtn() {
+
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
         checkIn_btn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
-                Toast.makeText(HomeFragment.this.getContext(), "clicked", Toast.LENGTH_LONG).show();
                 int checkIn = 0, checkOut = 0;
                 if (checkIn == 0 && checkOut == 0) {
                     checkIn_btn.setVisibility(View.GONE);
@@ -193,6 +224,25 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 throw new AssertionError();
                             } else if (response.body().getStatusCode() == 200) {
                                 Log.v("checkIn", response.body().getMessage());
+
+                                if (!userSession.getFlag()) {
+                                    userSession.setCurrentTime(currentTime);
+                                    userSession.setFlag(true);
+                                    chronometer.start();
+                                } else {
+                                    String sessionManagerCurrentTime = userSession.getCurrentTime();
+                                    try {
+                                        Date date1 = format.parse(sessionManagerCurrentTime);
+                                        Date date2 = format.parse(currentTime);
+                                        assert date1 != null;
+                                        assert date2 != null;
+                                        long mils = date2.getTime() - date1.getTime();
+                                        chronometer.setBase(SystemClock.elapsedRealtime() - mils);
+                                        chronometer.start();
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 //                                checkInOutPB.setVisibility(View.GONE);
 //                                startEndTimePB.setVisibility(View.GONE);
                                 startTime.setText(response.body().getData().getStartTime());
@@ -226,85 +276,50 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
     }
 
-    public void dashboardModalRefresh() {
-        // Toast.makeText(getContext(), "swipe clicked", Toast.LENGTH_SHORT).show();
 
-//        UserSession userSession = new UserSession(getContext());
-//        String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
-//            Call<DashboardModal> call = Controller.getInstance().getApi().dashboardModal("Bearer " + ACCESS_TOKEN);
-//            call.enqueue(new Callback<DashboardModal>() {
-//                @Override
-//                public void onResponse(Call<DashboardModal> call, Response<DashboardModal> response) {
-//                    int checkIn=1, checkOut=0;
-//                    assert response.body() != null;
-//                    if (response.body().getStatusCode()==200){
-////                        if(checkIn==1&&checkOut==1){
-////                            checkInOutPB.setVisibility(View.VISIBLE);
-////                            checkOut_btn.setVisibility(View.GONE);
-////                            Log.v("check", String.valueOf(response.body().getData().getCheckInCompany()));
-////
-////                        }
-//
-////                        if(checkIn==1&&checkOut==0){
-////                            today_working_hours.setText(response.body().getData().getTodayWorkingHours());
-////                        }
-//
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DashboardModal> call, Throwable t) {
-//                    Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            });
-    }
-
-    public  void dashboardModal2() {
+    public void dashboardModal2() {
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
-            Controller.getInstance().getApi().dashboardModal("Bearer " + ACCESS_TOKEN).enqueue(new Callback<DashboardModal>() {
+        Controller.getInstance().getApi().dashboardModal("Bearer " + ACCESS_TOKEN).enqueue(new Callback<DashboardModal>() {
 
 
-                public void onResponse(@NonNull Call<DashboardModal> call, Response<DashboardModal> response) {
-                    assert response.body() != null;
-                    if (response.body().getStatusCode() == 200) {
-                        ArrayList<String> company = new ArrayList<>();
-                        final ArrayList<Integer> c2 = new ArrayList<>();
-                        for (int i = 0; i < response.body().getData().getCompanies().size(); i++) {
-                            Log.v("msg", response.body().getData().getCompanies().get(i).getName());
-                            company.add(response.body().getData().getCompanies().get(i).getName());
-                            c2.add(response.body().getData().getCompanies().get(i).getPivot().getCompanyId());
-                        }
-                        ArrayAdapter<String> spinnerArrayAdapter= null;
-                        try {
-                             spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, company);
-                            spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-                        }
-                        catch (NullPointerException  ignored) {
-                        }
-
-                        companyDropdown.setAdapter(spinnerArrayAdapter);
-                        companyDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                               // Toast.makeText(HomeFragment.this.getContext(), "clicked " + c2.get(position), Toast.LENGTH_LONG).show();
-                                userSession.SaveKeyValue("company_id2", String.valueOf(c2.get(position)));
-                                if (c2.get(position) >= 0) {
-                                    dashboardModal();
-                                    //spinnerArrayAdapter.add(ACCESS_TOKEN);
-                                }
-                            }
-
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                                Toast.makeText(HomeFragment.this.getContext(), "please select item", Toast.LENGTH_LONG).show();
-                            }
-                        });
+            public void onResponse(@NonNull Call<DashboardModal> call, Response<DashboardModal> response) {
+                assert response.body() != null;
+                if (response.body().getStatusCode() == 200) {
+                    ArrayList<String> company = new ArrayList<>();
+                    final ArrayList<Integer> c2 = new ArrayList<>();
+                    for (int i = 0; i < response.body().getData().getCompanies().size(); i++) {
+                        Log.v("msg", response.body().getData().getCompanies().get(i).getName());
+                        company.add(response.body().getData().getCompanies().get(i).getName());
+                        c2.add(response.body().getData().getCompanies().get(i).getPivot().getCompanyId());
                     }
-                }
+                    ArrayAdapter<String> spinnerArrayAdapter = null;
+                    try {
+                        spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, company);
+                        spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                    } catch (NullPointerException ignored) {
+                    }
 
-                public void onFailure(@NonNull Call<DashboardModal> call, @NonNull Throwable t) {
-                    Log.v("dashboardCall", t.getLocalizedMessage());
+                    companyDropdown.setAdapter(spinnerArrayAdapter);
+                    companyDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                            userSession.SaveKeyValue("company_id2", String.valueOf(c2.get(position)));
+                            if (c2.get(position) >= 0) {
+                                dashboardModal();
+                            }
+                        }
+
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            Toast.makeText(HomeFragment.this.getContext(), "please select item", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
-            });
+            }
+
+            public void onFailure(@NonNull Call<DashboardModal> call, @NonNull Throwable t) {
+                Log.v("dashboardCall", t.getLocalizedMessage());
+            }
+        });
 
     }
 
@@ -314,7 +329,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         try {
             Controller.getInstance().getApi().dashboardModal("Bearer " + ACCESS_TOKEN).enqueue(new Callback<DashboardModal>() {
 
-
                 @SuppressLint("SetTextI18n")
                 public void onResponse(Call<DashboardModal> call, Response<DashboardModal> response) {
                     assert response.body() != null;
@@ -323,13 +337,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         workingHoursPB.setVisibility(View.GONE);
                         startEndTimePB.setVisibility(View.GONE);
                         total_working_hours.setText(response.body().getData().getTotalWorkingHours());
-                        today_working_hours.setText(response.body().getData().getTodayWorkingHours());
+//                        today_working_hours.setText(response.body().getData().getTodayWorkingHours());
                         startTime.setText(response.body().getData().getStartTime());
                         int checkIn = 0;
                         int checkOut = 0;
                         if (checkIn == response.body().getData().getCheckIn() && checkOut == response.body().getData().getCheckOut()) {
                             checkIn_btn.setVisibility(View.VISIBLE);
                             checkIn_btn.setText("CheckIN");
+                            salaryPB.setVisibility(View.GONE);
                             total_working_hours.setText(response.body().getData().getTotalWorkingHours());
                         }
                         int checkIn1 = 1;
@@ -342,7 +357,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             startTime.setText(response.body().getData().getStartTime());
                             salaryPB.setVisibility(View.GONE);
                             salaryTV.setText(String.valueOf(response.body().getData().getSalary()));
-                           // CountUpTimer.INTERVAL_MS();
+                            // CountUpTimer.INTERVAL_MS();
 //                            Runnable timerRunnable = new Runnable() {
 //
 //                                @SuppressLint("DefaultLocale")
@@ -358,7 +373,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //                                    timerHandler.postDelayed(this, 500);
 //                                }
 //                            };
-                            today_working_hours.setText(response.body().getData().getTodayWorkingHours());
+                            //  today_working_hours.setText(response.body().getData().getTodayWorkingHours());
 
 
                         }
@@ -366,20 +381,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         if (checkIn1 == response.body().getData().getCheckIn() && checkOut1 == response.body().getData().getCheckOut()) {
                             checkOut_btn.setVisibility(View.GONE);
                             checkInOutPB.setVisibility(View.GONE);
-//                            startEndTimePB.setVisibility(View.GONE);
-//                            workingHoursPB.setVisibility(View.GONE);
                             work_started.setText("Ended");
                             checkedOUT.setText("You checked out in " + response.body().getData().getCheckInCompany().getName());
                             endTime.setText(response.body().getData().getEndTime());
-
-
-                            //timerHandler.removeCallbacks(timerRunnable);
                         }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }
 
-                public void onFailure(Call<DashboardModal> call, Throwable t) {
-                   Log.v("dashboardModalCall", t.getLocalizedMessage());
+                public void onFailure(@NonNull Call<DashboardModal> call, @NonNull Throwable t) {
+                    Log.v("dashboardModalCall", t.getLocalizedMessage());
                 }
             });
         } catch (Exception e) {
@@ -387,10 +398,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    @Override
-    public void onRefresh() {
-        Toast.makeText(getContext(), "sho", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onResume() {
@@ -398,11 +405,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
-                //do your function;
                 //   dashboardModalRefresh();
                 handler.postDelayed(runnable, apiDelayed);
             }
-        }, apiDelayed); // so basically after your getPendingLeaves(), from next time it will be 5 sec repeated
+        }, apiDelayed);
     }
 
     @Override
@@ -426,7 +432,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             this.duration = durationMs;
         }
 
-        public abstract  void onTick(int second);
+        public abstract void onTick(int second);
 
         @Override
         public void onTick(long msUntilFinished) {

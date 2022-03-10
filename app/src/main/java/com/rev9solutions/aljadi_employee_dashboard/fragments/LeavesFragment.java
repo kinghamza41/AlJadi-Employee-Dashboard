@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.provider.Settings;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
@@ -34,6 +36,7 @@ public class LeavesFragment extends Fragment {
     TextView total_leaves, pending_leaves, approved_leaves, rejected_leaves, mid;
     ProgressBar total_leaves_pb, pending_leaves_pb, approved_rejected_pb;
     CardView applyForLeave;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public LeavesFragment() {
         // Required empty public constructor
@@ -61,6 +64,25 @@ public class LeavesFragment extends Fragment {
         pending_leaves_pb = v.findViewById(R.id.pending_leaves_pb);
         approved_rejected_pb = v.findViewById(R.id.approved_rejected_pb);
         applyForLeave = v.findViewById(R.id.applyForLeave);
+        swipeRefreshLayout = v.findViewById(R.id.swipeRefreshLeaves);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                if (!isConnected(LeavesFragment.this)) {
+                    showCustomDialog();
+                } else {
+                    leavesModalCall();
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
 
         if (!isConnected(LeavesFragment.this)) {
@@ -71,18 +93,8 @@ public class LeavesFragment extends Fragment {
             applyForLeave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-//                    View dialogView = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.fragment_leaves, null);
-//                    EditText editText;
-//                    AppCompatButton button;
-////                editText = dialogView.findViewById(R.id.et_rejection);
-////                button = dialogView.findViewById(R.id.reject_btn);
-//                    builder.setTitle("Reason for Rejection");
-//                    builder.setView(dialogView);
-//                    builder.setCancelable(true);
-//                    final AlertDialog dialog = builder.create();
                     Intent intent = new Intent(getContext(), ApplyForLeaveActivity.class);
-                    intent.putExtra("data", "some data" );
+                    intent.putExtra("data", "some data");
                     startActivity(intent);
                 }
             });

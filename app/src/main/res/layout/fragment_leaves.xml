@@ -7,286 +7,298 @@
     tools:context=".fragments.LeavesFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLeaves"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent"
+        tools:ignore="MissingConstraints">
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/al_jadi_logo"
-            android:src="@drawable/logo2" />
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="135dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <androidx.cardview.widget.CardView
-
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
                 android:orientation="vertical"
-                app:cardElevation="5dp"
-                tools:ignore="UsingOnClickInXml">
+                tools:ignore="UselessParent">
 
-                <RelativeLayout
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/al_jadi_logo"
+                    android:src="@drawable/logo2" />
 
-                    android:id="@+id/layout1"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="135dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <RelativeLayout
+                    <androidx.cardview.widget.CardView
 
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/white_circle">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:elevation="5dp"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:cardElevation="5dp"
+                        tools:ignore="UsingOnClickInXml">
 
-                        <ProgressBar
+                        <RelativeLayout
 
-                            android:id="@+id/total_leaves_pb"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/white_circle"
-                            tools:ignore="TooDeepLayout" />
+                            android:id="@+id/layout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                    </RelativeLayout>
+                            <RelativeLayout
 
-                    <TextView
-                        android:id="@+id/total_leaves"
-                        android:layout_width="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/white_circle">
+
+                                <ProgressBar
+
+                                    android:id="@+id/total_leaves_pb"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:indeterminate="true"
+                                    android:indeterminateDrawable="@drawable/white_circle"
+                                    tools:ignore="TooDeepLayout" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/total_leaves"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/total_leaves"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/total_leaves"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text=""
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:elevation="5dp"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:cardElevation="5dp"
+                        tools:ignore="UsingOnClickInXml">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/total_leaves"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/total_leaves"
-                        android:textSize="18sp"
-                        android:textStyle="normal" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/white_circle">
 
-                </RelativeLayout>
+                                <ProgressBar
 
-            </androidx.cardview.widget.CardView>
+                                    android:id="@+id/pending_leaves_pb"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:indeterminate="true"
+                                    android:indeterminateDrawable="@drawable/white_circle" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:cardElevation="5dp"
-                tools:ignore="UsingOnClickInXml">
+                            </RelativeLayout>
 
-                <RelativeLayout
+                            <TextView
+                                android:id="@+id/pending_leaves"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text=""
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/pending_leaves"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/pending_leaves"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="135dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/white_circle">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:elevation="5dp"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:cardElevation="5dp"
+                        tools:ignore="UsingOnClickInXml">
 
-                        <ProgressBar
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                            android:id="@+id/pending_leaves_pb"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/white_circle" />
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/white_circle">
 
-                    </RelativeLayout>
+                                <ProgressBar
 
-                    <TextView
-                        android:id="@+id/pending_leaves"
-                        android:layout_width="wrap_content"
+                                    android:id="@+id/approved_rejected_pb"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:indeterminate="true"
+                                    android:indeterminateDrawable="@drawable/white_circle" />
+
+                            </RelativeLayout>
+
+                            <LinearLayout
+                                android:id="@+id/approved_rejected_leaves_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/approved_leaves"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="20dp"
+                                    android:text=""
+                                    android:textSize="25sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/mid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/mid"
+                                    android:textSize="25sp"
+                                    android:textStyle="bold"
+                                    android:visibility="invisible" />
+
+                                <TextView
+                                    android:id="@+id/rejected_leaves"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="20dp"
+                                    android:text=""
+                                    android:textSize="25sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/approved_rejected_leaves_layout"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/approved_rejected"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/applyForLeave"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text=""
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:elevation="5dp"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:cardElevation="5dp"
+                        tools:ignore="UsingOnClickInXml">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/pending_leaves"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/pending_leaves"
-                        android:textSize="18sp"
-                        android:textStyle="normal" />
-
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="135dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:cardElevation="5dp"
-                tools:ignore="UsingOnClickInXml">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/white_circle">
-
-                        <ProgressBar
-
-                            android:id="@+id/approved_rejected_pb"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/white_circle" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@+id/approved_rejected_leaves_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_centerInParent="true">
-
-                        <TextView
-                            android:id="@+id/approved_leaves"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:text=""
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:id="@+id/mid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:text="@string/mid"
-                            android:textSize="25sp"
-                            android:visibility="invisible"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/rejected_leaves"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:text=""
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/approved_rejected_leaves_layout"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/approved_rejected"
-                        android:textSize="18sp"
-                        android:textStyle="normal" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="97dp">
 
 
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/applyForLeave"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:cardElevation="5dp"
-                tools:ignore="UsingOnClickInXml">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="97dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/apply_for_leaves"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
 
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/apply_for_leaves"
-                        android:textSize="18sp"
-                        android:textStyle="normal" />
+                        </RelativeLayout>
 
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-
-    </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>
