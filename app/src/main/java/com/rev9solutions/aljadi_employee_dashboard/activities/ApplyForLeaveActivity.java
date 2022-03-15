@@ -61,8 +61,6 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         leaveTypeSpinner = findViewById(R.id.spinner1);
         timePeriodSpinner = findViewById(R.id.spinner2);
         leaveDurationSpinner = findViewById(R.id.spinner3);
-        halfLeaveDatePicker = findViewById(R.id.datePicker);
-        fullLeaveDatePicker = findViewById(R.id.datePicker2);
         startDate = findViewById(R.id.datePicker3);
         endDate = findViewById(R.id.datePicker4);
         applyForLeaveBtn = findViewById(R.id.applyForLeaveBtn);
@@ -71,54 +69,10 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         leaveTypeAdapter();
         timePeriodAdapter();
         leaveDurationAdapter();
-        halfLeaveDatePicker();
-        fullLeaveDatePicker();
         startDate();
         endDate();
 
 
-    }
-
-
-    private void halfLeaveDatePicker() {
-        halfLeaveDatePicker.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ApplyForLeaveActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month + 1;
-                        String date = day+"/"+month+"/"+year;
-                        halfLeaveDatePicker.setText(date);
-
-                    }
-                }, year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                datePickerDialog.show();
-
-            }
-
-        });
-    }
-
-    private void fullLeaveDatePicker() {
-        fullLeaveDatePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ApplyForLeaveActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month + 1;
-                        String date = day+"/"+month+"/"+year;
-                        fullLeaveDatePicker.setText(date);
-
-                    }
-                }, year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                datePickerDialog.show();
-            }
-        });
     }
 
     private void startDate() {
@@ -129,7 +83,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                         month = month + 1;
-                        String date = day+"/"+month+"/"+year;
+                        String date = year + "/" + month + "/" + day;
                         startDate.setText(date);
 
                     }
@@ -148,7 +102,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                         month = month + 1;
-                        String date = day+"/"+month+"/"+year;
+                        String date = year + "/" + month + "/" + day;
                         endDate.setText(date);
 
                     }
@@ -165,12 +119,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         //Time Period Adapter
         ArrayAdapter<String> timePeriodAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.simple_spinner_item, timePeriod) {
             public int getCount() {
-                int c = super.getCount();
-//                if (timePeriodSpinner.getSelectedItemPosition() < c - 1) {
-//                    return c;
-//                }
-//                return c > 0 ? c - 1 : c;
-                return c;
+                return super.getCount();
             }
 
             @Override
@@ -190,26 +139,18 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                 if (position == 2) {
                     leaveDurationSpinner.setVisibility(View.VISIBLE);
                     leaveDurationSpinner.setSelection(0);
-                    halfLeaveDatePicker.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setText("");
+                    startDate.setVisibility(View.GONE);
                 } else if (position == 1) {
                     leaveDurationSpinner.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setVisibility(View.VISIBLE);
-                    fullLeaveDatePicker.setVisibility(View.GONE);
-                    startDate.setVisibility(View.GONE);
-                    endDate.setVisibility(View.GONE);
-                    fullLeaveDatePicker.setText("");
+                    startDate.setVisibility(View.VISIBLE);
                     startDate.setText("");
+                    endDate.setVisibility(View.GONE);
                     endDate.setText("");
 
                 } else {
                     leaveDurationSpinner.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setVisibility(View.GONE);
-                    fullLeaveDatePicker.setVisibility(View.GONE);
                     startDate.setVisibility(View.GONE);
                     endDate.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setText("");
-                    fullLeaveDatePicker.setText("");
                     startDate.setText("");
                     endDate.setText("");
                 }
@@ -226,17 +167,12 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         // Leave Duration Adapter
         ArrayAdapter<String> leaveDurationAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.simple_spinner_item, leaveDuration) {
             public int getCount() {
-                int c = super.getCount();
-                return c;
+                return super.getCount();
             }
 
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
         };
         leaveDurationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
@@ -249,29 +185,20 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                 leaveDurationSpinnerValues = leaveDurationSpinner.getItemAtPosition(position).toString().toLowerCase();
 
                 if (position == 1) {
-                    fullLeaveDatePicker.setVisibility(View.VISIBLE);
-                    startDate.setVisibility(View.GONE);
-                    endDate.setVisibility(View.GONE);
-                    startDate.setText("");
-                    endDate.setText("");
-                    halfLeaveDatePicker.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setText("");
-                } else if (position == 2) {
-                    fullLeaveDatePicker.setVisibility(View.GONE);
-                    fullLeaveDatePicker.setText("");
                     startDate.setVisibility(View.VISIBLE);
+                    endDate.setVisibility(View.GONE);
+                    startDate.setText("");
+                    endDate.setText("");
+                } else if (position == 2) {
+                    startDate.setVisibility(View.VISIBLE);
+                    startDate.setText("");
                     endDate.setVisibility(View.VISIBLE);
-                    halfLeaveDatePicker.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setText("");
+                    endDate.setText("");
                 } else {
-                    fullLeaveDatePicker.setVisibility(View.GONE);
-                    fullLeaveDatePicker.setText("");
                     startDate.setVisibility(View.GONE);
                     startDate.setText("");
                     endDate.setVisibility(View.GONE);
                     endDate.setText("");
-                    halfLeaveDatePicker.setVisibility(View.GONE);
-                    halfLeaveDatePicker.setText("");
                 }
             }
 
@@ -325,8 +252,6 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         TextView textViewLeaveDuration = (TextView) leaveDurationSpinner.getSelectedView();
         String leaveDurationSpinner12 = textViewLeaveDuration.getText().toString();
         String reasonForLeave = reasonForLeaveET.getText().toString();
-        String halfLeavePicker = halfLeaveDatePicker.getText().toString();
-        String fullLeavePicker = fullLeaveDatePicker.getText().toString();
         String startDatePicker = startDate.getText().toString();
         String endDatePicker = endDate.getText().toString();
 
@@ -339,24 +264,29 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
 
         } else if (timePeriodSpinner12.equals("Please Select Option")) {
             Toast.makeText(this, "Please select time period", Toast.LENGTH_SHORT).show();
-        } else if (timePeriodSpinner12.equals("Half Leave") && halfLeavePicker.isEmpty()) {
+        } else if (timePeriodSpinner12.equals("Half Leave") && startDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show();
 
         } else if (leaveDurationSpinner12.equals("Please Select Leave Duration") && timePeriodSpinner12.equals("Full Leave")) {
             Toast.makeText(this, "Please select leave duration", Toast.LENGTH_SHORT).show();
 
-        } else if (timePeriodSpinner12.equals("Full Leave") && leaveDurationSpinner12.equals("Only One Day") && fullLeavePicker.isEmpty()) {
+        } else if (timePeriodSpinner12.equals("Full Leave") && leaveDurationSpinner12.equals("Only One Day") && startDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show();
 
-        } else if (timePeriodSpinner12.equals("Full Leave") && leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.isEmpty() && endDatePicker.isEmpty()) {
-            Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show();
+        }
+        else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.isEmpty()) {
+            Toast.makeText(this, "Please select start date", Toast.LENGTH_SHORT).show();
 
-        } else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.equals(endDatePicker)) {
+        }
+        else if (leaveDurationSpinner12.equals("Multiple Days") && endDatePicker.isEmpty()) {
+            Toast.makeText(this, "Please select end date", Toast.LENGTH_SHORT).show();
+
+        }
+        else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.equals(endDatePicker)) {
             Toast.makeText(this, "Please select valid start and end date", Toast.LENGTH_SHORT).show();
 
         } else {
-           // Toast.makeText(this, halfLeavePicker, Toast.LENGTH_SHORT).show();
-            Call<ApplyForLeave> call = Controller.getInstance().getApi().applyForLeaveModal(leaveTypeSpinnerValues, reasonForLeave, timePeriodSpinnerValues, leaveDurationSpinnerValues, halfLeavePicker, fullLeavePicker, startDatePicker, endDatePicker, "Bearer " + ACCESS_TOKEN);
+            Call<ApplyForLeave> call = Controller.getInstance().getApi().applyForLeaveModal(leaveTypeSpinnerValues, reasonForLeave, timePeriodSpinnerValues, startDatePicker, endDatePicker, "Bearer " + ACCESS_TOKEN);
             call.enqueue(new Callback<ApplyForLeave>() {
                 @Override
                 public void onResponse(@NonNull Call<ApplyForLeave> call, @NonNull Response<ApplyForLeave> response) {
@@ -364,8 +294,6 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                     if (response.body().getStatus().equals("success")) {
                         Toast.makeText(ApplyForLeaveActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         reasonForLeaveET.setText("");
-                        halfLeaveDatePicker.setText("");
-                        fullLeaveDatePicker.setText("");
                         startDate.setText("");
                         endDate.setText("");
                         leaveTypeSpinner.setSelection(0);

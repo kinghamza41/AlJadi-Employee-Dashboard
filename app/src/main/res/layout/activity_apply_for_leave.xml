@@ -99,17 +99,6 @@
                     android:padding="10dp"
                     android:spinnerMode="dropdown" />
 
-                <EditText
-                    android:id="@+id/datePicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/please_select_date"
-                    android:visibility="invisible"
-                    tools:ignore="Autofill,TextFields" />
 
                 <Spinner
                     android:id="@+id/spinner3"
@@ -121,17 +110,6 @@
                     android:padding="10dp"
                     android:spinnerMode="dropdown"
                     android:visibility="invisible" />
-                <EditText
-                    android:id="@+id/datePicker2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/please_select_date"
-                    android:visibility="invisible"
-                    tools:ignore="Autofill,TextFields" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

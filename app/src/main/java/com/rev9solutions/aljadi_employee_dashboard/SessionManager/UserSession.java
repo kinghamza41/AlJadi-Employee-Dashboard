@@ -5,46 +5,36 @@ import android.content.SharedPreferences;
 
 public  class UserSession {
     private final String sharedprofileName = "haccount";
+    SharedPreferences preferences;
     private final Context _context;
     private UserSession instance;
     private SharedPreferences.Editor editor;
-    private SharedPreferences sharedPreferences;
 
     public  UserSession(Context context) {
         this._context = context;
     }
+    public void SaveKeyValue(String key, String value) {
+
+        preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
+        preferences.edit().putString(key, value).apply();
+       // preferences.edit().putBoolean("KEY_FLAG", false).apply();
+    }
+
     public void setFlag(Boolean flag) {
-        this.editor.putBoolean("KEY_FLAG", flag);
-        this.editor.commit();
+        preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean("KEY_FLAG", flag).apply();
+       // this.editor.commit();
     }
 
     public boolean getFlag() {
-        return this.sharedPreferences.getBoolean("KEY_FLAG", false);
+        preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
+        return preferences.getBoolean("KEY_FLAG", false);
     }
-
-    public void setCurrentTime(String currentTime) {
-        this.editor.putString("KEY_TIME", currentTime);
-        this.editor.commit();
-    }
-
-    public String getCurrentTime() {
-        return this.sharedPreferences.getString("KEY_TIME", "");
-    }
-
-    public void SaveKeyValue(String key, String value) {
-
-        SharedPreferences preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
-        preferences.edit().putString(key, value).apply();
-    }
-
     public  String GetKeyValue(String key) {
 
         SharedPreferences preferences = _context.getSharedPreferences(sharedprofileName, Context.MODE_PRIVATE);
-        return preferences.getString(key, null);
-
-
+       return preferences.getString(key, null);
     }
-
     public void SaveCredentials(String token) {
 
         SaveKeyValue("access_token", token);

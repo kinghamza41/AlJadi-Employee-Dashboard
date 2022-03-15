@@ -1,17 +1,23 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,6 +31,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class PayrolFragment extends Fragment {
@@ -39,7 +47,11 @@ public class PayrolFragment extends Fragment {
     final Calendar myCalendar = Calendar.getInstance();
     Spinner leaveTypeSpinner, timePeriodSpinner, leaveDurationSpinner;
     String leaveTypeSpinnerValues, timePeriodSpinnerValues, leaveDurationSpinnerValues, reasonForLeave;
-
+    private static final String KEY_CHRONOMETER_ELAPSED_TIME = "chronometerElapsedTime";
+    private static final String KEY_CHRONOMETER_STOPPED_TIME = "chronometerStoppedTime";
+    long timeWhenStopped;
+    private Chronometer chronometer;
+    private SharedPreferences prefs;
 
     public PayrolFragment() {
         // Required empty public constructor
@@ -57,74 +69,102 @@ public class PayrolFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_payrol, container, false);
+        chronometer = v.findViewById(R.id.chronometer2);
 //        datePicker = v.findViewById(R.id.datePickerTest);
 //        leaveTypeSpinner = v.findViewById(R.id.spinner12);
 //        timePeriodSpinner = v.findViewById(R.id.spinner21);
 //        leaveDurationSpinner = v.findViewById(R.id.spinner31);
         timer = new Timer();
-//        startStopBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (timeStarted == false) {
-//                    timeStarted = true;
-//                   // startStopBtn.setText("Stop");
-//
-//                    startTimer();
-//                } else {
-//                    timeStarted = false;
-//                    // startStopBtn.setText("Start");
-//                    timerTask.cancel();
-//                }
-//            }
-//        });
-//        return v;
-//
-//    }
-//
-//    private void startTimer() {
-//        timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//
-//                time++;
-//                //timerText.setText(getTimerText());
-//            }
-//        };
-//        timer.scheduleAtFixedRate(timerTask,0,1000);
-//
-//    }
+        Button startButton = v.findViewById(R.id.btnStart);
+        Button stopButton = v.findViewById(R.id.btnStop);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setElapsedTime(-1);
+                setStoppedTime(-1);
+                chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+                chronometer.start();
+            }
+        });
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setElapsedTime(-1);
+                setStoppedTime(-1);
+                // chronometer.setBase(SystemClock.elapsedRealtime());
+                timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
+                chronometer.stop();
+            }
+        });
 
-//    private String getTimerText() {
-//        int rounded = (int) Math.round(time);
-//        int seconds = ((rounded % 86400) % 3600) % 60;
-//        int minutes = ((rounded % 86400) % 3600) / 60;
-//        int hours = ((rounded % 86400) / 3600) ;
-//        return formatTime(seconds,minutes,hours);
-//    }
-//
-//    @SuppressLint("DefaultLocale")
-//    private String formatTime(int seconds, int minutes, int hours) {
-//        return String.format("%02d",hours + " : " + String.format("%02d",minutes) + " : " + String.format("%02d",seconds));
-//    }
-        //leaveTypeAdapter();
-//        timePeriodAdapter();
-//        leaveDurationAdapter();
-//        startDatePickerDialog();
-//        datePicker.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //  Calendar calendar =  myCalendar.add(Calendar.DATE, -1);
-//                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-//                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-//                datePickerDialog.show();
-////                new DatePickerDialog(ApplyForLeaveActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-////                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-//
-//            }
-//        });
-//
         return v;
-   }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        prefs = getContext().getSharedPreferences("chronometer", MODE_PRIVATE);
+        if (prefs.contains(KEY_CHRONOMETER_ELAPSED_TIME)
+                && prefs.contains(KEY_CHRONOMETER_STOPPED_TIME)) {
+            long chronometerElapsedTime = prefs.getLong(KEY_CHRONOMETER_ELAPSED_TIME, -1);
+            long chronometerStoppedTime = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, -1);
+            long chronometerStoppedTime2 = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, 0);
+            if (chronometerElapsedTime != -1 && chronometerStoppedTime != -1) {
+                long now = System.currentTimeMillis();
+                long elapsedTimeFromLastStop = now - chronometerStoppedTime; // Including restart time
+
+                long elapsedRealTime = SystemClock.elapsedRealtime();
+                long base = elapsedRealTime - (chronometerElapsedTime + elapsedTimeFromLastStop);
+                chronometer.setBase(base);
+                chronometer.start();
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        setElapsedTime(getChronometerTimeMs());
+        setStoppedTime(System.currentTimeMillis());
+        super.onStop();
+    }
+
+    private void setElapsedTime(long elapsedTimeMs) {
+        prefs.edit().putLong(KEY_CHRONOMETER_ELAPSED_TIME, elapsedTimeMs).apply();
+    }
+
+    private void setStoppedTime(long stoppedTimeMs) {
+        prefs.edit().putLong(KEY_CHRONOMETER_STOPPED_TIME, stoppedTimeMs).apply();
+    }
+
+    private long getChronometerTimeMs() {
+        long chronometerTimeMs = 0;
+
+        // Regex for HH:MM:SS or MM:SS
+        String regex = "([0-1]?\\d|2[0-3])(?::([0-5]?\\d))?(?::([0-5]?\\d))?";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(chronometer.getText());
+        if (matcher.find()) {
+            boolean isHHMMSSFormat = matcher.groupCount() == 4;
+            if (isHHMMSSFormat) {
+                int hour = Integer.valueOf(matcher.group(1));
+                int minute = Integer.valueOf(matcher.group(2));
+                int second = Integer.valueOf(matcher.group(3));
+                chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS)
+                        + (minute * DateUtils.MINUTE_IN_MILLIS)
+                        + (second * DateUtils.SECOND_IN_MILLIS);
+            } else {
+                int minute = Integer.valueOf(matcher.group(1));
+                int second = Integer.valueOf(matcher.group(2));
+                chronometerTimeMs = (minute * DateUtils.MINUTE_IN_MILLIS)
+                        + (second * DateUtils.SECOND_IN_MILLIS);
+            }
+        }
+
+        return chronometerTimeMs;
+    }
 //    private void startDatePickerDialog() {
 //        date = new DatePickerDialog.OnDateSetListener() {
 //            @Override
@@ -247,4 +287,4 @@ public class PayrolFragment extends Fragment {
 //            }
 //        });
 //    }
-    }
+}
