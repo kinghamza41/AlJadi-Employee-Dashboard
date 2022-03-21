@@ -50,18 +50,19 @@
                     android:layout_marginBottom="7dp"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
                 <Spinner
                     android:id="@+id/companyDropdown"
-                    android:layout_width="match_parent"
+                    style="@style/spinner_style"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:drawSelectorOnTop="true"
+                    android:gravity="center"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:background="@android:drawable/btn_dropdown"
                     android:layoutDirection="ltr"
-                    android:scrollbarStyle="insideInset"
-                    android:spinnerMode="dropdown"
-                    android:visibility="visible" />
+                    android:padding="10dp"
+                    android:spinnerMode="dropdown" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -127,7 +128,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_marginTop="10dp"
                                     android:layout_marginBottom="10dp"
-                                    android:background="@color/main_background"
+                                    android:background="@drawable/round_corners"
+                                    android:elevation="5dp"
+                                    android:padding="6dp"
                                     android:text="@string/check_in_check_out"
                                     android:textSize="18sp"
                                     android:textStyle="normal"
@@ -141,7 +144,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_marginTop="10dp"
                                     android:layout_marginBottom="10dp"
-                                    android:background="@color/main_background"
+                                    android:background="@drawable/round_corners"
+                                    android:elevation="5dp"
+                                    android:padding="6dp"
                                     android:text="@string/check_in_check_out"
                                     android:textSize="18sp"
                                     android:textStyle="normal"
@@ -201,7 +206,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="start"
-                                        android:layout_marginStart="10dp"
+                                        android:layout_marginStart="20dp"
                                         android:layout_marginTop="10dp"
                                         android:layout_marginBottom="10dp"
                                         android:layout_weight="1"
@@ -215,7 +220,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="end"
                                         android:layout_marginTop="10dp"
-                                        android:layout_marginEnd="10dp"
+                                        android:layout_marginEnd="20dp"
                                         android:layout_marginBottom="10dp"
                                         android:layout_weight="1"
                                         android:gravity="end"
@@ -303,14 +308,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:weightSum="3">
 
                                     <TextView
                                         android:id="@+id/total_working_hours"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="start"
-                                        android:layout_marginStart="10dp"
+                                        android:layout_marginStart="20dp"
                                         android:layout_marginTop="10dp"
                                         android:layout_marginBottom="10dp"
                                         android:layout_weight="1"
@@ -318,9 +323,24 @@
                                         android:textSize="25sp"
                                         android:textStyle="bold" />
 
+                                    <TextView
+                                        android:id="@+id/today_working_hours_tv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="end"
+                                        android:layout_marginStart="50dp"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="end"
+                                        android:text=""
+                                        android:textSize="25sp"
+                                        android:textStyle="bold"
+                                        android:visibility="invisible" />
+
                                     <Chronometer
                                         android:id="@+id/today_working_hours"
-                                        android:layout_width="177dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="10dp"
                                         android:layout_marginBottom="10dp"
@@ -328,8 +348,8 @@
                                         android:gravity="end"
                                         android:textColor="#A41B1414"
                                         android:textSize="25sp"
-                                        android:visibility="invisible"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="invisible" />
 
                                 </LinearLayout>
 

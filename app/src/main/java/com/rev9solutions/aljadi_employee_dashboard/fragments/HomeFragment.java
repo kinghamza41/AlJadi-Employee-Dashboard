@@ -1,10 +1,13 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +55,7 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
     int apiDelayed = 1000;
-    TextView arrivalTime, startTime, total_working_hours, work_started, checkedIN, checkedOUT, endTime, salaryTV;
+    TextView arrivalTime, startTime, total_working_hours, today_working_hours_tv, work_started, checkedIN, checkedOUT, endTime, salaryTV;
     Chronometer chronometer;
     AppCompatButton checkIn_btn, checkOut_btn;
     Spinner companyDropdown;
@@ -63,6 +69,10 @@ public class HomeFragment extends Fragment {
     Handler timerHandler = new Handler();
     String currentTime;
     SimpleDateFormat format;
+    private static final String KEY_CHRONOMETER_ELAPSED_TIME = "chronometerElapsedTime";
+    private static final String KEY_CHRONOMETER_STOPPED_TIME = "chronometerStoppedTime";
+    long timeWhenStopped;
+    private SharedPreferences prefs;
 
 
     public HomeFragment() {
@@ -89,11 +99,13 @@ public class HomeFragment extends Fragment {
         this.checkOut_btn = (AppCompatButton) v.findViewById(R.id.check_out_btn);
         this.salaryTV = v.findViewById(R.id.salaryTV);
         this.salaryPB = v.findViewById(R.id.salaryPB);
+        today_working_hours_tv = v.findViewById(R.id.today_working_hours_tv);
         swipeRefreshLayout = v.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (isConnected(HomeFragment.this)) {
+                    swipeRefreshLayout.setRefreshing(false);
                     showCustomDialog();
                 } else {
                     checkedIN.setText("");
@@ -103,6 +115,7 @@ public class HomeFragment extends Fragment {
                     work_started.setText("");
                     startTime.setText("");
                     total_working_hours.setText("");
+                    today_working_hours_tv.setText("");
                     dashboardModal2();
                     dashboardModal();
                 }
@@ -115,19 +128,10 @@ public class HomeFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                dashboardModalRefresh();
-//
-//            }
-//        }, 1000);
         boolean connection = isNetworkAvailable();
         if (connection) {
             Log.v("msg", "success");
-            // Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
-            //dashboardModal2();
+
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
 
@@ -138,24 +142,6 @@ public class HomeFragment extends Fragment {
             dashboardModal2();
             checkInBtn();
             checkOutBtn();
-        }
-        UserSession userSession = new UserSession(getContext());
-        format = new SimpleDateFormat("hh:mm:ss aa");
-        currentTime = format.format(new Date());
-        boolean flag = userSession.getFlag();
-        if (flag) {
-            String sessionManagerCurrentTime = userSession.GetKeyValue("dsf");
-            try {
-                Date date1 = format.parse(sessionManagerCurrentTime);
-                Date date2 = format.parse(currentTime);
-                assert date1 != null;
-                assert date2 != null;
-                long mils = date2.getTime() - date1.getTime();
-                chronometer.setBase(SystemClock.elapsedRealtime() - mils);
-                chronometer.start();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
         }
 
         return v;
@@ -211,34 +197,38 @@ public class HomeFragment extends Fragment {
                     callCheckIn.enqueue(new Callback<CheckInModal>() {
                         @SuppressLint("SimpleDateFormat")
                         @Override
-                        public void onResponse(Call<CheckInModal> call, Response<CheckInModal> response) {
+                        public void onResponse(@NonNull Call<CheckInModal> call, @NonNull Response<CheckInModal> response) {
                             if (response.body() == null) {
                                 throw new AssertionError();
                             } else if (response.body().getStatusCode() == 200) {
                                 Log.v("checkIn", response.body().getMessage());
                                 chronometer.setVisibility(View.VISIBLE);
-                                format = new SimpleDateFormat("hh:mm:ss aa");
-                                currentTime = format.format(new Date());
-                                boolean flag = userSession.getFlag();
-                                if (!flag) {
-                                    userSession.SaveKeyValue("dsf", currentTime);
-                                    userSession.setFlag(true);
-                                    chronometer.setBase(SystemClock.elapsedRealtime());
-                                    chronometer.start();
-                                } else {
-                                    String sessionManagerCurrentTime = userSession.GetKeyValue("dsf");
-                                    try {
-                                        Date date1 = format.parse(sessionManagerCurrentTime);
-                                        Date date2 = format.parse(currentTime);
-                                        assert date1 != null;
-                                        assert date2 != null;
-                                        long mils = date2.getTime() - date1.getTime();
-                                        chronometer.setBase(SystemClock.elapsedRealtime() - mils);
-                                        chronometer.start();
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+//                                format = new SimpleDateFormat("hh:mm:ss aa");
+//                                currentTime = format.format(new Date());
+//                                boolean flag = userSession.getFlag();
+//                                if (!flag) {
+//                                    userSession.SaveKeyValue("dsf", currentTime);
+//                                    userSession.setFlag(true);
+//                                    chronometer.setBase(SystemClock.elapsedRealtime());
+//                                    chronometer.start();
+//                                } else {
+//                                    String sessionManagerCurrentTime = userSession.GetKeyValue("dsf");
+//                                    try {
+//                                        Date date1 = format.parse(sessionManagerCurrentTime);
+//                                        Date date2 = format.parse(currentTime);
+//                                        assert date1 != null;
+//                                        assert date2 != null;
+//                                        long mils = date2.getTime() - date1.getTime();
+//                                        chronometer.setBase(SystemClock.elapsedRealtime() - mils);
+//                                        chronometer.start();
+//                                    } catch (ParseException e) {
+//                                        e.printStackTrace();
+//                                    }
+                                setElapsedTime(-1);
+                                setStoppedTime(-1);
+                                chronometer.setBase(SystemClock.elapsedRealtime());
+                                chronometer.start();
+
                                 startTime.setText(response.body().getData().getStartTime());
                                 work_started.setText("Started");
                                 dashboardModal();
@@ -246,7 +236,7 @@ public class HomeFragment extends Fragment {
                         }
 
                         @Override
-                        public void onFailure(Call<CheckInModal> call, Throwable t) {
+                        public void onFailure(@NonNull Call<CheckInModal> call, @NonNull Throwable t) {
                             Toast.makeText(HomeFragment.this.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                         }
@@ -270,20 +260,18 @@ public class HomeFragment extends Fragment {
 
 
                         @SuppressLint("SetTextI18n")
-                        public void onResponse(Call<CheckOutModal> call, Response<CheckOutModal> response) {
+                        public void onResponse(@NonNull Call<CheckOutModal> call, @NonNull Response<CheckOutModal> response) {
                             assert response.body() != null;
                             if (response.body().getStatusCode() == 200) {
                                 Log.v("checkIn", response.body().getMessage());
                                 work_started.setText("Ended");
                                 //  chronometer.setBase(SystemClock.elapsedRealtime());
-                                userSession.setFlag(false);
-                                chronometer.stop();
-
+                                chronometer.setVisibility(View.GONE);
                                 dashboardModal();
                             }
                         }
 
-                        public void onFailure(Call<CheckOutModal> call, Throwable t) {
+                        public void onFailure(@NonNull Call<CheckOutModal> call, @NonNull Throwable t) {
                             Toast.makeText(HomeFragment.this.getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
@@ -301,6 +289,8 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<DashboardModal> call, @NonNull Response<DashboardModal> response) {
                 assert response.body() != null;
                 if (response.body().getStatusCode() == 200) {
+//                    chronometer.setVisibility(View.VISIBLE);
+
                     ArrayList<String> company = new ArrayList<>();
                     final ArrayList<Integer> c2 = new ArrayList<>();
                     for (int i = 0; i < response.body().getData().getCompanies().size(); i++) {
@@ -361,6 +351,7 @@ public class HomeFragment extends Fragment {
                             checkIn_btn.setText("CheckIN");
                             salaryPB.setVisibility(View.GONE);
                             total_working_hours.setText(response.body().getData().getTotalWorkingHours());
+                            today_working_hours_tv.setVisibility(View.GONE);
                         }
                         int checkIn1 = 1;
                         if (checkIn1 == response.body().getData().getCheckIn() && checkOut == response.body().getData().getCheckOut()) {
@@ -371,6 +362,7 @@ public class HomeFragment extends Fragment {
                             checkedIN.setText("You checked in " + response.body().getData().getCheckInCompany().getName());
                             startTime.setText(response.body().getData().getStartTime());
                             salaryPB.setVisibility(View.GONE);
+                            chronometer.setVisibility(View.VISIBLE);
                             salaryTV.setText(String.valueOf(response.body().getData().getSalary()));
                         }
                         int checkOut1 = 1;
@@ -382,6 +374,10 @@ public class HomeFragment extends Fragment {
                             salaryPB.setVisibility(View.GONE);
                             checkedOUT.setText("You checked out in " + response.body().getData().getCheckInCompany().getName());
                             endTime.setText(response.body().getData().getEndTime());
+                            chronometer.setVisibility(View.GONE);
+                            today_working_hours_tv.setVisibility(View.VISIBLE);
+                            today_working_hours_tv.setText(response.body().getData().getTodayWorkingHours());
+//                            chronometer.setText();
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -400,47 +396,95 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+//
+//        handler.postDelayed(runnable = new Runnable() {
+//            public void run() {
+//                //   dashboardModalRefresh();
+//                handler.postDelayed(runnable, apiDelayed);
+//            }
+//        }, apiDelayed);
 
-        handler.postDelayed(runnable = new Runnable() {
-            public void run() {
-                //   dashboardModalRefresh();
-                handler.postDelayed(runnable, apiDelayed);
-            }
-        }, apiDelayed);
+        // chronometer.getBase();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         dashboardModal2();
+        prefs = requireContext().getSharedPreferences("chronometer", MODE_PRIVATE);
+        if (prefs.contains(KEY_CHRONOMETER_ELAPSED_TIME)
+                && prefs.contains(KEY_CHRONOMETER_STOPPED_TIME)) {
+            long chronometerElapsedTime = prefs.getLong(KEY_CHRONOMETER_ELAPSED_TIME, -1);
+            long chronometerStoppedTime = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, -1);
+            long chronometerStoppedTime2 = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, 0);
+            if (chronometerElapsedTime != -1 && chronometerStoppedTime != -1) {
+                long now = System.currentTimeMillis();
+                long elapsedTimeFromLastStop = now - chronometerStoppedTime; // Including restart time
+                long elapsedRealTime = SystemClock.elapsedRealtime();
+                long base = elapsedRealTime - (chronometerElapsedTime + elapsedTimeFromLastStop);
+                chronometer.setBase(base);
+                chronometer.start();
+            }
+
+        }
+
+
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        handler.removeCallbacks(runnable); //stop handler when activity not visible
+    public void onStop() {
+        setElapsedTime(getChronometerTimeMs());
+        setStoppedTime(System.currentTimeMillis());
+        super.onStop();
     }
 
-    public abstract static class CountUpTimer extends CountDownTimer {
-        private static final long INTERVAL_MS = 1000;
-        private final long duration;
-
-        protected CountUpTimer(long durationMs) {
-            super(durationMs, INTERVAL_MS);
-            this.duration = durationMs;
-        }
-
-        public abstract void onTick(int second);
-
-        @Override
-        public void onTick(long msUntilFinished) {
-            int second = (int) ((duration - msUntilFinished) / 1000);
-            onTick(second);
-        }
-
-        @Override
-        public void onFinish() {
-            onTick(duration / 1000);
-        }
+    private void setElapsedTime(long elapsedTimeMs) {
+        prefs.edit().putLong(KEY_CHRONOMETER_ELAPSED_TIME, elapsedTimeMs).apply();
     }
+
+    private void setStoppedTime(long stoppedTimeMs) {
+        prefs.edit().putLong(KEY_CHRONOMETER_STOPPED_TIME, stoppedTimeMs).apply();
+    }
+
+    private long getChronometerTimeMs() {
+        long chronometerTimeMs = 0;
+
+        // Regex for HH:MM:SS or MM:SS
+        String regex = "([0-1]?\\\\d|2[0-3])(?::([0-5]?\\\\d))?(?::([0-5]?\\\\d))?";
+
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(chronometer.getText());
+        if (matcher.find()) {
+            boolean isHHMMSSFormat = matcher.groupCount() == 4;
+            if (isHHMMSSFormat) {
+                int hour = Integer.valueOf(matcher.group(1));
+                int minute = Integer.valueOf(matcher.group(2));
+                int second = Integer.valueOf(matcher.group(3));
+
+                chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS)
+                        + (minute * DateUtils.MINUTE_IN_MILLIS)
+                        + (second * DateUtils.SECOND_IN_MILLIS);
+            } else {
+                try {
+                    int hour = Integer.valueOf(matcher.group(1));
+                    int minute = Integer.parseInt(Objects.requireNonNull(matcher.group(2)));
+                    int second = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
+                    chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS) + (minute * DateUtils.MINUTE_IN_MILLIS)
+                            + (second * DateUtils.SECOND_IN_MILLIS);
+                } catch (NullPointerException ignored) {
+
+                }
+
+            }
+        }
+        return chronometerTimeMs;
+    }
+
 }
+
+
+
+
+

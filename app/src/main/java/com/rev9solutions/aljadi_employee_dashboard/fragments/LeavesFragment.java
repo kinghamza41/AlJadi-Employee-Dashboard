@@ -70,6 +70,7 @@ public class LeavesFragment extends Fragment {
             public void onRefresh() {
 
                 if (!isConnected(LeavesFragment.this)) {
+                    swipeRefreshLayout.setRefreshing(false);
                     showCustomDialog();
                 } else {
                     leavesModalCall();

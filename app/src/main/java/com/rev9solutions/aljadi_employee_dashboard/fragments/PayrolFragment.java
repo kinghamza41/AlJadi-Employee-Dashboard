@@ -29,6 +29,7 @@ import com.rev9solutions.aljadi_employee_dashboard.activities.ApplyForLeaveActiv
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -69,7 +70,7 @@ public class PayrolFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_payrol, container, false);
-        chronometer = v.findViewById(R.id.chronometer2);
+        chronometer = v.findViewById(R.id.chronometer4);
 //        datePicker = v.findViewById(R.id.datePickerTest);
 //        leaveTypeSpinner = v.findViewById(R.id.spinner12);
 //        timePeriodSpinner = v.findViewById(R.id.spinner21);
@@ -82,7 +83,7 @@ public class PayrolFragment extends Fragment {
             public void onClick(View view) {
                 setElapsedTime(-1);
                 setStoppedTime(-1);
-                chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+                chronometer.setBase(SystemClock.elapsedRealtime() );
                 chronometer.start();
             }
         });
@@ -103,7 +104,7 @@ public class PayrolFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        prefs = getContext().getSharedPreferences("chronometer", MODE_PRIVATE);
+        prefs = requireContext().getSharedPreferences("chronometer", MODE_PRIVATE);
         if (prefs.contains(KEY_CHRONOMETER_ELAPSED_TIME)
                 && prefs.contains(KEY_CHRONOMETER_STOPPED_TIME)) {
             long chronometerElapsedTime = prefs.getLong(KEY_CHRONOMETER_ELAPSED_TIME, -1);
@@ -112,7 +113,6 @@ public class PayrolFragment extends Fragment {
             if (chronometerElapsedTime != -1 && chronometerStoppedTime != -1) {
                 long now = System.currentTimeMillis();
                 long elapsedTimeFromLastStop = now - chronometerStoppedTime; // Including restart time
-
                 long elapsedRealTime = SystemClock.elapsedRealtime();
                 long base = elapsedRealTime - (chronometerElapsedTime + elapsedTimeFromLastStop);
                 chronometer.setBase(base);

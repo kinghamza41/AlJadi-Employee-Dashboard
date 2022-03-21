@@ -204,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                     userSession.SaveKeyValue("id", String.valueOf(response.body().getData().getUser().getId()));
                     userSession.SaveKeyValue("email", String.valueOf(response.body().getData().getUser().getEmail()));
                     userSession.SaveKeyValue("token", response.body().getData().getToken());
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -217,6 +218,8 @@ public class LoginActivity extends AppCompatActivity {
                             new UserSession(getApplicationContext()).SaveCredentials(loginResponse.getData().getToken());
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
+                            finish();
+
                         }
                     }, 300);
                 } else if (response.body().getStatusCode() != 200) {

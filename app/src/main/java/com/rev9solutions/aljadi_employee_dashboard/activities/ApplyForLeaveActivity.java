@@ -255,7 +255,6 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         String startDatePicker = startDate.getText().toString();
         String endDatePicker = endDate.getText().toString();
 
-
         if (leaveTypeSpinner12.equals("Please Select Leave Type")) {
             Toast.makeText(this, "Please select leave type", Toast.LENGTH_SHORT).show();
 
@@ -273,16 +272,13 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         } else if (timePeriodSpinner12.equals("Full Leave") && leaveDurationSpinner12.equals("Only One Day") && startDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.isEmpty()) {
+        } else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select start date", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (leaveDurationSpinner12.equals("Multiple Days") && endDatePicker.isEmpty()) {
+        } else if (leaveDurationSpinner12.equals("Multiple Days") && endDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select end date", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.equals(endDatePicker)) {
+        } else if (leaveDurationSpinner12.equals("Multiple Days") && startDatePicker.equals(endDatePicker)) {
             Toast.makeText(this, "Please select valid start and end date", Toast.LENGTH_SHORT).show();
 
         } else {

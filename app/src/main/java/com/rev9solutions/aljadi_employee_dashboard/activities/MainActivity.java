@@ -33,6 +33,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
@@ -221,17 +222,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void checkUserExistence() {
         UserSession userSession = new UserSession(getApplicationContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
-
-        if (ACCESS_TOKEN != null) {
-            LoginRequest loginRequest = new LoginRequest();
-            String sharedProfileName = "haccount";
-            SharedPreferences preferences = getSharedPreferences(sharedProfileName, Context.MODE_PRIVATE);
-            preferences.edit().remove("access_token").apply();
-            preferences.edit().remove(loginRequest.getEmail()).apply();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (ACCESS_TOKEN != null) {
+                    LoginRequest loginRequest = new LoginRequest();
+                    String sharedProfileName = "haccount";
+                    SharedPreferences preferences = getSharedPreferences(sharedProfileName, Context.MODE_PRIVATE);
+                    preferences.edit().remove("access_token").apply();
+                    preferences.edit().remove(loginRequest.getEmail()).apply();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        }, 300);
     }
+
 
     @Override
     public void onBackPressed() {
