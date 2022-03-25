@@ -28,6 +28,7 @@ import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 import com.rev9solutions.aljadi_employee_dashboard.modal.ApplyForLeave;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -71,7 +72,6 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
         leaveDurationAdapter();
         startDate();
         endDate();
-
 
     }
 
@@ -263,6 +263,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
 
         } else if (timePeriodSpinner12.equals("Please Select Option")) {
             Toast.makeText(this, "Please select time period", Toast.LENGTH_SHORT).show();
+
         } else if (timePeriodSpinner12.equals("Half Leave") && startDatePicker.isEmpty()) {
             Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show();
 
@@ -297,11 +298,9 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
                         leaveDurationSpinner.setSelection(0);
                     } else if (response.body().getStatus().equals("error")) {
                         Toast.makeText(ApplyForLeaveActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
                     }
 
                 }
-
 
                 @Override
                 public void onFailure(@NonNull Call<ApplyForLeave> call, @NonNull Throwable t) {

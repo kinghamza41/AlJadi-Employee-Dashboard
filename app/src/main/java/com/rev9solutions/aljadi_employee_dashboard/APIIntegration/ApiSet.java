@@ -4,9 +4,11 @@ package com.rev9solutions.aljadi_employee_dashboard.APIIntegration;
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
 import com.rev9solutions.aljadi_employee_dashboard.modal.ApplyForLeave;
 import com.rev9solutions.aljadi_employee_dashboard.modal.ArrivalTimeModal;
+import com.rev9solutions.aljadi_employee_dashboard.modal.AttendanceRequestModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckInModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckOutModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
+import com.rev9solutions.aljadi_employee_dashboard.modal.GetCompanyModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.LeavesModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.StartEndTimeModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.WorkingHoursModal;
@@ -25,11 +27,16 @@ public interface ApiSet {
 
     @POST("employee/check/in")
     @Headers({"Content-Type: application/json"})
-    Call<CheckInModal> checkInModal(@Query("company_id") String str, @Header("Authorization") String str2);
+    Call<CheckInModal> checkInModal(@Query("company_id") String str,
+                                    @Query("latitude") String latitude,
+                                    @Query("longitude") String longitude,
+                                    @Header("Authorization") String str2);
 
     @POST("employee/check/out")
     @Headers({"Content-Type: application/json"})
-    Call<CheckOutModal> checkOutModal(@Header("Authorization") String str2);
+    Call<CheckOutModal> checkOutModal(@Query("latitude") String latitude,
+                                      @Query("longitude") String longitude,
+                                      @Header("Authorization") String str2);
 
     @GET("employee/dashboard")
     @Headers({"Content-Type: application/json"})
@@ -47,6 +54,19 @@ public interface ApiSet {
                                            @Query("start_date") String start_date,
                                            @Query("end_date") String end_date,
                                            @Header("Authorization") String str5);
+
+    @GET("employee/companies")
+    @Headers({"Content-Type: application/json"})
+    Call<GetCompanyModal> getCompanyModal(@Header("Authorization") String str);
+
+    @POST("employee/store/attendance/request")
+    @Headers({"Content-Type: application/json"})
+    Call<AttendanceRequestModal> attendanceRequestModal(@Query("company_id") int company_id,
+                                                        @Query("shift_start_time") String shift_start_time,
+                                                        @Query("shift_end_time") String shift_end_time,
+                                                        @Query("date") String date,
+                                                        @Query("reason") String reason,
+                                                        @Header("Authorization") String str);
 
     @POST("employee/login")
     Call<LoginResponse> verifyUser(@Body LoginRequest loginRequest);

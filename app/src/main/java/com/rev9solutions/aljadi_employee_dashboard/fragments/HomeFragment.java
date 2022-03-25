@@ -3,22 +3,36 @@ package com.rev9solutions.aljadi_employee_dashboard.fragments;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.location.Location;
+import android.location.LocationManager;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateUtils;
@@ -34,9 +48,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
+import com.rev9solutions.aljadi_employee_dashboard.activities.MainActivity;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckInModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.CheckOutModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
@@ -67,10 +87,12 @@ public class HomeFragment extends Fragment {
     long startTime1 = 0;
     SwipeRefreshLayout swipeRefreshLayout;
     Handler timerHandler = new Handler();
-    String currentTime;
+    String currentTime, latitude, longitude;
     SimpleDateFormat format;
-    private static final String KEY_CHRONOMETER_ELAPSED_TIME = "chronometerElapsedTime";
-    private static final String KEY_CHRONOMETER_STOPPED_TIME = "chronometerStoppedTime";
+    FusedLocationProviderClient fusedLocationProviderClient;
+
+    //    private static final String KEY_CHRONOMETER_ELAPSED_TIME = "chronometerElapsedTime";
+//    private static final String KEY_CHRONOMETER_STOPPED_TIME = "chronometerStoppedTime";
     long timeWhenStopped;
     private SharedPreferences prefs;
 
@@ -88,7 +110,7 @@ public class HomeFragment extends Fragment {
         this.startTime = (TextView) v.findViewById(R.id.startTime);
         this.endTime = (TextView) v.findViewById(R.id.endTime);
         this.total_working_hours = (TextView) v.findViewById(R.id.total_working_hours);
-        this.chronometer = (Chronometer) v.findViewById(R.id.today_working_hours);
+        // this.chronometer = (Chronometer) v.findViewById(R.id.today_working_hours);
         this.checkInOutPB = (ProgressBar) v.findViewById(R.id.checkIn_out_PB);
         this.startEndTimePB = (ProgressBar) v.findViewById(R.id.startEndTimePB);
         this.workingHoursPB = (ProgressBar) v.findViewById(R.id.workingHoursPB);
@@ -143,7 +165,11 @@ public class HomeFragment extends Fragment {
             checkInBtn();
             checkOutBtn();
         }
-
+//        if (ActivityCompat.checkSelfPermission(requireContext(), "android.permission.ACCESS_FINE_LOCATION") == 0 && ActivityCompat.checkSelfPermission(requireContext(), "android.permission.ACCESS_COARSE_LOCATION") == 0) {
+//            getCurrentLocation();
+//        } else {
+//            ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 100);
+//        }
         return v;
     }
 
@@ -184,6 +210,8 @@ public class HomeFragment extends Fragment {
 
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
+        latitude = userSession.GetKeyValue("latitude");
+        longitude = userSession.GetKeyValue("longitude");
         checkIn_btn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -193,7 +221,7 @@ public class HomeFragment extends Fragment {
                     checkIn_btn.setVisibility(View.GONE);
                     checkOut_btn.setVisibility(View.VISIBLE);
                     checkOut_btn.setText("CheckOut");
-                    Call<CheckInModal> callCheckIn = Controller.getInstance().getApi().checkInModal(new UserSession(getContext()).GetKeyValue("company_id2"), "Bearer " + ACCESS_TOKEN);
+                    Call<CheckInModal> callCheckIn = Controller.getInstance().getApi().checkInModal(new UserSession(getContext()).GetKeyValue("company_id2"), latitude, longitude, "Bearer " + ACCESS_TOKEN);
                     callCheckIn.enqueue(new Callback<CheckInModal>() {
                         @SuppressLint("SimpleDateFormat")
                         @Override
@@ -202,7 +230,8 @@ public class HomeFragment extends Fragment {
                                 throw new AssertionError();
                             } else if (response.body().getStatusCode() == 200) {
                                 Log.v("checkIn", response.body().getMessage());
-                                chronometer.setVisibility(View.VISIBLE);
+                                //
+                                // chronometer.setVisibility(View.VISIBLE);
 //                                format = new SimpleDateFormat("hh:mm:ss aa");
 //                                currentTime = format.format(new Date());
 //                                boolean flag = userSession.getFlag();
@@ -224,10 +253,10 @@ public class HomeFragment extends Fragment {
 //                                    } catch (ParseException e) {
 //                                        e.printStackTrace();
 //                                    }
-                                setElapsedTime(-1);
-                                setStoppedTime(-1);
-                                chronometer.setBase(SystemClock.elapsedRealtime());
-                                chronometer.start();
+//                                setElapsedTime(-1);
+//                                setStoppedTime(-1);
+//                                chronometer.setBase(SystemClock.elapsedRealtime());
+//                                chronometer.start();
 
                                 startTime.setText(response.body().getData().getStartTime());
                                 work_started.setText("Started");
@@ -256,7 +285,7 @@ public class HomeFragment extends Fragment {
                 int checkOut = 0;
                 if (checkIn == 1 && checkOut == 0) {
                     checkOut_btn.setVisibility(View.GONE);
-                    Controller.getInstance().getApi().checkOutModal("Bearer " + ACCESS_TOKEN).enqueue(new Callback<CheckOutModal>() {
+                    Controller.getInstance().getApi().checkOutModal(latitude, longitude, "Bearer " + ACCESS_TOKEN).enqueue(new Callback<CheckOutModal>() {
 
 
                         @SuppressLint("SetTextI18n")
@@ -266,7 +295,7 @@ public class HomeFragment extends Fragment {
                                 Log.v("checkIn", response.body().getMessage());
                                 work_started.setText("Ended");
                                 //  chronometer.setBase(SystemClock.elapsedRealtime());
-                                chronometer.setVisibility(View.GONE);
+                                // chronometer.setVisibility(View.GONE);
                                 dashboardModal();
                             }
                         }
@@ -328,6 +357,62 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] + grantResults[1] == 0) {
+//            getCurrentLocation();
+//        } else {
+//            Toast.makeText(getContext(), "Permission denied.", Toast.LENGTH_SHORT).show();
+//        }
+
+
+//    @SuppressLint("MissingPermission")
+//    public void getCurrentLocation() {
+//        LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+//        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+//            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+//                public void onComplete(@NonNull Task<Location> task) {
+//                    Location location = task.getResult();
+//                    if (location != null) {
+//                        UserSession userSession = new UserSession(requireContext());
+////                        userSession.SaveKeyValue("latitude", String.valueOf(location.getLatitude()));
+////                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLatitude()));
+//                        latitude = String.valueOf(location.getLatitude());
+//                        longitude = String.valueOf(location.getLongitude());
+////                        Log.v("lat", String.valueOf(location.getLatitude()));
+////                        Log.v("long", String.valueOf(location.getLongitude()));
+////                        MainActivity.this.tvLatitude.setText(String.valueOf(location.getLatitude()));
+////                        MainActivity.this.tvLongitude.setText(String.valueOf(location.getLongitude()));
+//
+//                    } else {
+//                        // When location result is null
+//                        LocationRequest locationRequest = new LocationRequest()
+//                                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//                                .setInterval(10000)
+//                                .setFastestInterval(1000)
+//                                .setNumUpdates(1);
+//
+//                        LocationCallback locationCallback = new LocationCallback() {
+//                            @Override
+//                            public void onLocationResult(@NonNull LocationResult locationResult) {
+//                                super.onLocationResult(locationResult);
+//                                Location location1 = locationResult.getLastLocation();
+//                                Log.v("lat1", String.valueOf(location1.getLatitude()));
+//                                Log.v("long1", String.valueOf(location1.getLongitude()));
+//                            }
+//                        };
+//                        //Request Location Update
+//                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+//                    }
+//                }
+//            });
+//        } else {
+//            // When location service is not enabled
+//            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//        }
+//    }
+
     public void dashboardModal() {
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
@@ -362,7 +447,9 @@ public class HomeFragment extends Fragment {
                             checkedIN.setText("You checked in " + response.body().getData().getCheckInCompany().getName());
                             startTime.setText(response.body().getData().getStartTime());
                             salaryPB.setVisibility(View.GONE);
-                            chronometer.setVisibility(View.VISIBLE);
+                            today_working_hours_tv.setVisibility(View.VISIBLE);
+                            today_working_hours_tv.setText(response.body().getData().getTodayWorkingHours());
+                            // chronometer.setVisibility(View.VISIBLE);
                             salaryTV.setText(String.valueOf(response.body().getData().getSalary()));
                         }
                         int checkOut1 = 1;
@@ -374,8 +461,7 @@ public class HomeFragment extends Fragment {
                             salaryPB.setVisibility(View.GONE);
                             checkedOUT.setText("You checked out in " + response.body().getData().getCheckInCompany().getName());
                             endTime.setText(response.body().getData().getEndTime());
-                            chronometer.setVisibility(View.GONE);
-                            today_working_hours_tv.setVisibility(View.VISIBLE);
+                            // chronometer.setVisibility(View.GONE);
                             today_working_hours_tv.setText(response.body().getData().getTodayWorkingHours());
 //                            chronometer.setText();
                         }
@@ -412,77 +498,75 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         dashboardModal2();
-        prefs = requireContext().getSharedPreferences("chronometer", MODE_PRIVATE);
-        if (prefs.contains(KEY_CHRONOMETER_ELAPSED_TIME)
-                && prefs.contains(KEY_CHRONOMETER_STOPPED_TIME)) {
-            long chronometerElapsedTime = prefs.getLong(KEY_CHRONOMETER_ELAPSED_TIME, -1);
-            long chronometerStoppedTime = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, -1);
-            long chronometerStoppedTime2 = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, 0);
-            if (chronometerElapsedTime != -1 && chronometerStoppedTime != -1) {
-                long now = System.currentTimeMillis();
-                long elapsedTimeFromLastStop = now - chronometerStoppedTime; // Including restart time
-                long elapsedRealTime = SystemClock.elapsedRealtime();
-                long base = elapsedRealTime - (chronometerElapsedTime + elapsedTimeFromLastStop);
-                chronometer.setBase(base);
-                chronometer.start();
-            }
-
-        }
-
-
-    }
-
-    @Override
-    public void onStop() {
-        setElapsedTime(getChronometerTimeMs());
-        setStoppedTime(System.currentTimeMillis());
-        super.onStop();
-    }
-
-    private void setElapsedTime(long elapsedTimeMs) {
-        prefs.edit().putLong(KEY_CHRONOMETER_ELAPSED_TIME, elapsedTimeMs).apply();
-    }
-
-    private void setStoppedTime(long stoppedTimeMs) {
-        prefs.edit().putLong(KEY_CHRONOMETER_STOPPED_TIME, stoppedTimeMs).apply();
-    }
-
-    private long getChronometerTimeMs() {
-        long chronometerTimeMs = 0;
-
-        // Regex for HH:MM:SS or MM:SS
-        String regex = "([0-1]?\\\\d|2[0-3])(?::([0-5]?\\\\d))?(?::([0-5]?\\\\d))?";
-
-        Pattern pattern = Pattern.compile(regex);
-
-        Matcher matcher = pattern.matcher(chronometer.getText());
-        if (matcher.find()) {
-            boolean isHHMMSSFormat = matcher.groupCount() == 4;
-            if (isHHMMSSFormat) {
-                int hour = Integer.valueOf(matcher.group(1));
-                int minute = Integer.valueOf(matcher.group(2));
-                int second = Integer.valueOf(matcher.group(3));
-
-                chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS)
-                        + (minute * DateUtils.MINUTE_IN_MILLIS)
-                        + (second * DateUtils.SECOND_IN_MILLIS);
-            } else {
-                try {
-                    int hour = Integer.valueOf(matcher.group(1));
-                    int minute = Integer.parseInt(Objects.requireNonNull(matcher.group(2)));
-                    int second = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
-                    chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS) + (minute * DateUtils.MINUTE_IN_MILLIS)
-                            + (second * DateUtils.SECOND_IN_MILLIS);
-                } catch (NullPointerException ignored) {
-
-                }
-
-            }
-        }
-        return chronometerTimeMs;
+//        prefs = requireContext().getSharedPreferences("chronometer", MODE_PRIVATE);
+//        if (prefs.contains(KEY_CHRONOMETER_ELAPSED_TIME)
+//                && prefs.contains(KEY_CHRONOMETER_STOPPED_TIME)) {
+//            long chronometerElapsedTime = prefs.getLong(KEY_CHRONOMETER_ELAPSED_TIME, -1);
+//            long chronometerStoppedTime = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, -1);
+//            long chronometerStoppedTime2 = prefs.getLong(KEY_CHRONOMETER_STOPPED_TIME, 0);
+//            if (chronometerElapsedTime != -1 && chronometerStoppedTime != -1) {
+//                long now = System.currentTimeMillis();
+//                long elapsedTimeFromLastStop = now - chronometerStoppedTime; // Including restart time
+//                long elapsedRealTime = SystemClock.elapsedRealtime();
+//                long base = elapsedRealTime - (chronometerElapsedTime + elapsedTimeFromLastStop);
+//                chronometer.setBase(base);
+        //  chronometer.start();
     }
 
 }
+
+
+//    @Override
+//    public void onStop() {
+//        setElapsedTime(getChronometerTimeMs());
+//        setStoppedTime(System.currentTimeMillis());
+//        super.onStop();
+//    }
+//
+//    private void setElapsedTime(long elapsedTimeMs) {
+//        prefs.edit().putLong(KEY_CHRONOMETER_ELAPSED_TIME, elapsedTimeMs).apply();
+//    }
+//
+//    private void setStoppedTime(long stoppedTimeMs) {
+//        prefs.edit().putLong(KEY_CHRONOMETER_STOPPED_TIME, stoppedTimeMs).apply();
+//    }
+//
+//    private long getChronometerTimeMs() {
+//        long chronometerTimeMs = 0;
+//
+//        // Regex for HH:MM:SS or MM:SS
+//        String regex = "([0-1]?\\\\d|2[0-3])(?::([0-5]?\\\\d))?(?::([0-5]?\\\\d))?";
+//
+//        Pattern pattern = Pattern.compile(regex);
+//
+//        Matcher matcher = pattern.matcher(chronometer.getText());
+//        if (matcher.find()) {
+//            boolean isHHMMSSFormat = matcher.groupCount() == 4;
+//            if (isHHMMSSFormat) {
+//                int hour = Integer.valueOf(matcher.group(1));
+//                int minute = Integer.valueOf(matcher.group(2));
+//                int second = Integer.valueOf(matcher.group(3));
+//
+//                chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS)
+//                        + (minute * DateUtils.MINUTE_IN_MILLIS)
+//                        + (second * DateUtils.SECOND_IN_MILLIS);
+//            } else {
+//                try {
+//                    int hour = Integer.valueOf(matcher.group(1));
+//                    int minute = Integer.parseInt(Objects.requireNonNull(matcher.group(2)));
+//                    int second = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
+//                    chronometerTimeMs = (hour * DateUtils.HOUR_IN_MILLIS) + (minute * DateUtils.MINUTE_IN_MILLIS)
+//                            + (second * DateUtils.SECOND_IN_MILLIS);
+//                } catch (NullPointerException ignored) {
+//
+//                }
+//
+//            }
+//        }
+//        return chronometerTimeMs;
+//   }
+
+
 
 
 

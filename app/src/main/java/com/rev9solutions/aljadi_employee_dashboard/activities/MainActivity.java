@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
+import com.rev9solutions.aljadi_employee_dashboard.fragments.AttendanceRequestFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.HomeFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.LeavesFragment;
 import com.rev9solutions.aljadi_employee_dashboard.R;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (location != null) {
                         UserSession userSession = new UserSession(getApplicationContext());
                         userSession.SaveKeyValue("latitude", String.valueOf(location.getLatitude()));
-                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLatitude()));
+                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLongitude()));
                         Log.v("lat", String.valueOf(location.getLatitude()));
                         Log.v("long", String.valueOf(location.getLongitude()));
 //                        MainActivity.this.tvLatitude.setText(String.valueOf(location.getLatitude()));
@@ -281,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
 
                 break;
-            case R.id.payroll:
-                temp = new PayrolFragment();
+            case R.id.attendance:
+                temp = new AttendanceRequestFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
 
                 break;

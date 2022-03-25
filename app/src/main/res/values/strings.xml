@@ -58,4 +58,14 @@
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
     <string name="dashboard">Dashboard</string>
+    <string name="attendance_request">Attendance Request</string>
+    <string name="shift_start_time">Shift Start Time</string>
+    <string name="e_g_09_00">e.g. 09:00</string>
+    <string name="shift_end_time">Shift End Time</string>
+    <string name="e_g_18_00">e.g. 18:00</string>
+    <string name="date">Date</string>
+    <string name="reason">Reason</string>
+    <string name="submit">Submit</string>
+    <string name="please_write_reason_for_attendance_request">Please Write Reason For Attendance Request</string>
+    <string name="please_enter_reason">Please Enter Reason</string>
 </resources>

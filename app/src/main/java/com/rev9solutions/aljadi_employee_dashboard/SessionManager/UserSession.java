@@ -3,6 +3,8 @@ package com.rev9solutions.aljadi_employee_dashboard.SessionManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.List;
+
 public  class UserSession {
     private final String sharedprofileName = "haccount";
     SharedPreferences preferences;
