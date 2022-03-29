@@ -3,10 +3,12 @@ package com.rev9solutions.aljadi_employee_dashboard.fragments;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,8 +21,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -57,6 +61,7 @@ public class AttendanceRequestFragment extends Fragment {
     Calendar myCalendar = Calendar.getInstance();
     TimePickerDialog timePickerDialog;
     Spinner companySpinner;
+    ProgressDialog dialog;
     ArrayList<String> company = new ArrayList<>();
     final int year = myCalendar.get(Calendar.YEAR);
     final int month = myCalendar.get(Calendar.MONTH);
@@ -203,7 +208,7 @@ public class AttendanceRequestFragment extends Fragment {
 
             @Override
             public void onFailure(Call<GetCompanyModal> call, Throwable t) {
-              //  Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -223,7 +228,10 @@ public class AttendanceRequestFragment extends Fragment {
                     } else if (reason.getText().toString().isEmpty()) {
                         Toast.makeText(getContext(), "Please Select Reason", Toast.LENGTH_SHORT).show();
                     } else {
-
+                        dialog = new ProgressDialog(getContext());
+                        dialog.setMessage("Please wait...");
+                        dialog.setCancelable(false);
+                        dialog.show();
                         attendanceRequest();
 //
 
@@ -254,16 +262,22 @@ public class AttendanceRequestFragment extends Fragment {
             public void onResponse(@NonNull Call<AttendanceRequestModal> call, @NonNull Response<AttendanceRequestModal> response) {
 
                 if (response.body().getStatus().equals("success")) {
+                    dialog.dismiss();
                     Toast.makeText(getContext(), "Attendance request send successfully", Toast.LENGTH_SHORT).show();
+                    shiftStartTime.setText("");
+                    shiftEndTime.setText("");
+                    dateET.setText("");
+                    reason.setText("");
                 } else {
+                    dialog.dismiss();
                     Toast.makeText(getContext(), "Already apply for attendance request on this date", Toast.LENGTH_SHORT).show();
-
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<AttendanceRequestModal> call, Throwable t) {
-               // Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                // Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -293,5 +307,21 @@ public class AttendanceRequestFragment extends Fragment {
                     }
                 }).show();
     }
+
+//    public boolean dispatchTouchEvent(MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            View v = requireActivity().getCurrentFocus();
+//            if (v instanceof EditText) {
+//                Rect outRect = new Rect();
+//                v.getGlobalVisibleRect(outRect);
+//                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+//                    v.clearFocus();
+//                    InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                }
+//            }
+//        }
+//        return dispatchTouchEvent(event);
+//    }
 
 }

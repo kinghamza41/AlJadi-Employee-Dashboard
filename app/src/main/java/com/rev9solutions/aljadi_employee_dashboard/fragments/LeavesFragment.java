@@ -85,20 +85,18 @@ public class LeavesFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-
+        applyForLeave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ApplyForLeaveActivity.class);
+                intent.putExtra("data", "some data");
+                startActivity(intent);
+            }
+        });
         if (!isConnected(LeavesFragment.this)) {
             showCustomDialog();
         } else {
             leavesModalCall();
-
-            applyForLeave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ApplyForLeaveActivity.class);
-                    intent.putExtra("data", "some data");
-                    startActivity(intent);
-                }
-            });
 
         }
         return v;

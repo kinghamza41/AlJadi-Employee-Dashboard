@@ -17,6 +17,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -75,7 +76,7 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
     int apiDelayed = 1000;
-    TextView arrivalTime, startTime, total_working_hours, today_working_hours_tv, work_started, checkedIN, checkedOUT, endTime, salaryTV;
+    TextView userEmail, arrivalTime, startTime, total_working_hours, today_working_hours_tv, work_started, checkedIN, checkedOUT, endTime, salaryTV;
     Chronometer chronometer;
     AppCompatButton checkIn_btn, checkOut_btn;
     Spinner companyDropdown;
@@ -90,6 +91,7 @@ public class HomeFragment extends Fragment {
     String currentTime, latitude, longitude;
     SimpleDateFormat format;
     FusedLocationProviderClient fusedLocationProviderClient;
+    CardView cardPresent;
 
     //    private static final String KEY_CHRONOMETER_ELAPSED_TIME = "chronometerElapsedTime";
 //    private static final String KEY_CHRONOMETER_STOPPED_TIME = "chronometerStoppedTime";
@@ -105,7 +107,12 @@ public class HomeFragment extends Fragment {
     @SuppressLint("SimpleDateFormat")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        View v2 = inflater.inflate(R.layout.activity_main, container, false);
+        if (getArguments() != null) {
+            latitude = getArguments().getString("lat");
+            longitude = getArguments().getString("long");
+//            Log.v("lat12334", latitude);
+//            Log.v("long2323", longitude);
+        }
         this.work_started = (TextView) v.findViewById(R.id.work_started);
         this.startTime = (TextView) v.findViewById(R.id.startTime);
         this.endTime = (TextView) v.findViewById(R.id.endTime);
@@ -121,6 +128,7 @@ public class HomeFragment extends Fragment {
         this.checkOut_btn = (AppCompatButton) v.findViewById(R.id.check_out_btn);
         this.salaryTV = v.findViewById(R.id.salaryTV);
         this.salaryPB = v.findViewById(R.id.salaryPB);
+        cardPresent = v.findViewById(R.id.cardPresent);
         today_working_hours_tv = v.findViewById(R.id.today_working_hours_tv);
         swipeRefreshLayout = v.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -133,7 +141,6 @@ public class HomeFragment extends Fragment {
                     checkedIN.setText("");
                     checkedOUT.setText("");
                     endTime.setText("");
-//                    chronometer.setText("00:00");
                     work_started.setText("");
                     startTime.setText("");
                     total_working_hours.setText("");
@@ -165,11 +172,6 @@ public class HomeFragment extends Fragment {
             checkInBtn();
             checkOutBtn();
         }
-//        if (ActivityCompat.checkSelfPermission(requireContext(), "android.permission.ACCESS_FINE_LOCATION") == 0 && ActivityCompat.checkSelfPermission(requireContext(), "android.permission.ACCESS_COARSE_LOCATION") == 0) {
-//            getCurrentLocation();
-//        } else {
-//            ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 100);
-//        }
         return v;
     }
 
@@ -189,7 +191,6 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -210,8 +211,6 @@ public class HomeFragment extends Fragment {
 
         UserSession userSession = new UserSession(getContext());
         String ACCESS_TOKEN = userSession.GetKeyValue("access_token");
-        latitude = userSession.GetKeyValue("latitude");
-        longitude = userSession.GetKeyValue("longitude");
         checkIn_btn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -329,8 +328,8 @@ public class HomeFragment extends Fragment {
                     }
                     ArrayAdapter<String> spinnerArrayAdapter = null;
                     try {
-                        spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, company);
-                        spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.simple_spinner_item, company);
+                        spinnerArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
                     } catch (NullPointerException ignored) {
                     }
 
@@ -365,8 +364,8 @@ public class HomeFragment extends Fragment {
 //        } else {
 //            Toast.makeText(getContext(), "Permission denied.", Toast.LENGTH_SHORT).show();
 //        }
-
-
+//
+//    }
 //    @SuppressLint("MissingPermission")
 //    public void getCurrentLocation() {
 //        LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
@@ -380,8 +379,8 @@ public class HomeFragment extends Fragment {
 ////                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLatitude()));
 //                        latitude = String.valueOf(location.getLatitude());
 //                        longitude = String.valueOf(location.getLongitude());
-////                        Log.v("lat", String.valueOf(location.getLatitude()));
-////                        Log.v("long", String.valueOf(location.getLongitude()));
+//                        Log.v("lat", String.valueOf(location.getLatitude()));
+//                        Log.v("long", String.valueOf(location.getLongitude()));
 ////                        MainActivity.this.tvLatitude.setText(String.valueOf(location.getLatitude()));
 ////                        MainActivity.this.tvLongitude.setText(String.valueOf(location.getLongitude()));
 //
@@ -426,7 +425,6 @@ public class HomeFragment extends Fragment {
                         checkInOutPB.setVisibility(View.GONE);
                         workingHoursPB.setVisibility(View.GONE);
                         startEndTimePB.setVisibility(View.GONE);
-
                         total_working_hours.setText(response.body().getData().getTotalWorkingHours());
                         startTime.setText(response.body().getData().getStartTime());
                         int checkIn = 0;
@@ -436,7 +434,6 @@ public class HomeFragment extends Fragment {
                             checkIn_btn.setText("CheckIN");
                             salaryPB.setVisibility(View.GONE);
                             total_working_hours.setText(response.body().getData().getTotalWorkingHours());
-                            today_working_hours_tv.setVisibility(View.GONE);
                         }
                         int checkIn1 = 1;
                         if (checkIn1 == response.body().getData().getCheckIn() && checkOut == response.body().getData().getCheckOut()) {
@@ -447,7 +444,6 @@ public class HomeFragment extends Fragment {
                             checkedIN.setText("You checked in " + response.body().getData().getCheckInCompany().getName());
                             startTime.setText(response.body().getData().getStartTime());
                             salaryPB.setVisibility(View.GONE);
-                            today_working_hours_tv.setVisibility(View.VISIBLE);
                             today_working_hours_tv.setText(response.body().getData().getTodayWorkingHours());
                             // chronometer.setVisibility(View.VISIBLE);
                             salaryTV.setText(String.valueOf(response.body().getData().getSalary()));
@@ -461,6 +457,7 @@ public class HomeFragment extends Fragment {
                             salaryPB.setVisibility(View.GONE);
                             checkedOUT.setText("You checked out in " + response.body().getData().getCheckInCompany().getName());
                             endTime.setText(response.body().getData().getEndTime());
+
                             // chronometer.setVisibility(View.GONE);
                             today_working_hours_tv.setText(response.body().getData().getTodayWorkingHours());
 //                            chronometer.setText();

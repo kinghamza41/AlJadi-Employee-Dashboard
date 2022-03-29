@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     TextView userEmail;
     FusedLocationProviderClient fusedLocationProviderClient;
-    UserSession userSession = new UserSession(MainActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
-        userEmail = findViewById(R.id.uEmail);
-        String uEmail = userSession.GetKeyValue("email");
-//        userEmail.setText("dsfdsf");
+//        userEmail = findViewById(R.id.uEmail);
+//        UserSession userSession = new UserSession(getApplicationContext());
+//        String uEmail = userSession.GetKeyValue("email");
+//        userEmail.setText(uEmail);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -84,23 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.Home);
 
-//            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//                @Override
-//                public void onRefresh() {
-//                    HomeFragment homeFragment = new HomeFragment();
-//                    homeFragment.dashboardModal2();
-//                    Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-//                    swipeContainer.setRefreshing(false);
-//                }
 //
-//            });
-//
-//            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-//                    android.R.color.holo_green_light,
-//                    android.R.color.holo_orange_light,
-//                    android.R.color.holo_red_light);
-//        }
-
         }
         if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.ACCESS_FINE_LOCATION") == 0 && ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
             MainActivity.this.getCurrentLocation();
@@ -109,8 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] + grantResults[1] == 0) {
             getCurrentLocation();
@@ -127,13 +110,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onComplete(@NonNull Task<Location> task) {
                     Location location = task.getResult();
                     if (location != null) {
-                        UserSession userSession = new UserSession(getApplicationContext());
-                        userSession.SaveKeyValue("latitude", String.valueOf(location.getLatitude()));
-                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLongitude()));
-                        Log.v("lat", String.valueOf(location.getLatitude()));
-                        Log.v("long", String.valueOf(location.getLongitude()));
-//                        MainActivity.this.tvLatitude.setText(String.valueOf(location.getLatitude()));
-//                        MainActivity.this.tvLongitude.setText(String.valueOf(location.getLongitude()));
+                        // UserSession userSession = new UserSession(getApplicationContext());
+//                        userSession.SaveKeyValue("latitude", String.valueOf(location.getLatitude()));
+//                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLongitude()));
+                        Bundle bundle = new Bundle();
+                        bundle.putString("lat", String.valueOf(location.getLatitude()));
+                        bundle.putString("long", String.valueOf(location.getLongitude()));
+                        HomeFragment homeFragment = new HomeFragment();
+                        homeFragment.setArguments(bundle);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+                        Log.v("lat12", String.valueOf(location.getLatitude()));
 
                     } else {
                         // When location result is null
@@ -149,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 super.onLocationResult(locationResult);
                                 Location location1 = locationResult.getLastLocation();
                                 Log.v("lat1", String.valueOf(location1.getLatitude()));
-                                Log.v("long1", String.valueOf(location1.getLongitude()));
                             }
                         };
                         //Request Location Update
