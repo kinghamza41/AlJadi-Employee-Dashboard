@@ -1,6 +1,5 @@
 package com.rev9solutions.aljadi_employee_dashboard.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -8,7 +7,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -21,10 +19,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -36,22 +32,16 @@ import android.widget.Toast;
 import com.rev9solutions.aljadi_employee_dashboard.APIIntegration.Controller;
 import com.rev9solutions.aljadi_employee_dashboard.R;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
-import com.rev9solutions.aljadi_employee_dashboard.activities.ApplyForLeaveActivity;
 import com.rev9solutions.aljadi_employee_dashboard.modal.AttendanceRequestModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.GetCompanyModal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 
 public class AttendanceRequestFragment extends Fragment {
@@ -163,7 +153,7 @@ public class AttendanceRequestFragment extends Fragment {
 
                     }
                 }, year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+               // datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
         });

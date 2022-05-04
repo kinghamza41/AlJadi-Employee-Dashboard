@@ -4,15 +4,9 @@
         android:checkableBehavior="single"
         >
     <item
-        android:id="@+id/Home"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="@string/dashboard_home" />
-    <item
         android:id="@+id/Leaves"
         android:icon="@drawable/leaves"
         android:title="@string/leaves" />
-
-
         <item
             android:id="@+id/attendance"
             android:icon="@drawable/ic_baseline_payments_24"

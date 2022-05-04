@@ -93,7 +93,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
 
                     }
                 }, year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+              //  datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
         });
@@ -112,7 +112,7 @@ public class ApplyForLeaveActivity extends AppCompatActivity {
 
                     }
                 }, year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+             //   datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
         });

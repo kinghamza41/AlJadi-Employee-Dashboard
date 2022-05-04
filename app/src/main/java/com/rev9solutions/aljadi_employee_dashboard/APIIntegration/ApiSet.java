@@ -3,15 +3,9 @@ package com.rev9solutions.aljadi_employee_dashboard.APIIntegration;
 
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
 import com.rev9solutions.aljadi_employee_dashboard.modal.ApplyForLeave;
-import com.rev9solutions.aljadi_employee_dashboard.modal.ArrivalTimeModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.AttendanceRequestModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.CheckInModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.CheckOutModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.DashboardModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.GetCompanyModal;
 import com.rev9solutions.aljadi_employee_dashboard.modal.LeavesModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.StartEndTimeModal;
-import com.rev9solutions.aljadi_employee_dashboard.modal.WorkingHoursModal;
 import com.rev9solutions.aljadi_employee_dashboard.response.LoginResponse;
 
 import retrofit2.Call;
@@ -24,23 +18,6 @@ import retrofit2.http.Query;
 
 public interface ApiSet {
 
-
-    @POST("employee/check/in")
-    @Headers({"Content-Type: application/json"})
-    Call<CheckInModal> checkInModal(@Query("company_id") String str,
-                                    @Query("latitude") String latitude,
-                                    @Query("longitude") String longitude,
-                                    @Header("Authorization") String str2);
-
-    @POST("employee/check/out")
-    @Headers({"Content-Type: application/json"})
-    Call<CheckOutModal> checkOutModal(@Query("latitude") String latitude,
-                                      @Query("longitude") String longitude,
-                                      @Header("Authorization") String str2);
-
-    @GET("employee/dashboard")
-    @Headers({"Content-Type: application/json"})
-    Call<DashboardModal> dashboardModal(@Header("Authorization") String str);
 
     @POST("employee/leaves")
     @Headers({"Content-Type: application/json"})
@@ -70,15 +47,6 @@ public interface ApiSet {
 
     @POST("employee/login")
     Call<LoginResponse> verifyUser(@Body LoginRequest loginRequest);
-//
-//    @Headers("Content-Type: application/json")
-//    @POST("employee/leaves")
-//    Call<LeavesResponse> leavesResponse(@Body int id);
-
-
-//    @Headers("Content-Type: application/json")
-//    @POST("employee/apply/for/leave")
-//    Call<ApplyLeaveResponse> applyLeavesResponse(@Body int id);
 
 }
  

@@ -8,10 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -29,7 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -38,7 +34,6 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,10 +41,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.rev9solutions.aljadi_employee_dashboard.LoginApiData.LoginRequest;
 import com.rev9solutions.aljadi_employee_dashboard.SessionManager.UserSession;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.AttendanceRequestFragment;
-import com.rev9solutions.aljadi_employee_dashboard.fragments.HomeFragment;
 import com.rev9solutions.aljadi_employee_dashboard.fragments.LeavesFragment;
 import com.rev9solutions.aljadi_employee_dashboard.R;
-import com.rev9solutions.aljadi_employee_dashboard.fragments.PayrolFragment;
 
 import java.util.Objects;
 
@@ -71,87 +64,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
-//        userEmail = findViewById(R.id.uEmail);
-//        UserSession userSession = new UserSession(getApplicationContext());
-//        String uEmail = userSession.GetKeyValue("email");
-//        userEmail.setText(uEmail);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
-            navigationView.setCheckedItem(R.id.Home);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LeavesFragment()).commit();
+            navigationView.setCheckedItem(R.id.Leaves);
 
-//
         }
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.ACCESS_FINE_LOCATION") == 0 && ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
-            MainActivity.this.getCurrentLocation();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 100);
-        }
-    }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] + grantResults[1] == 0) {
-            getCurrentLocation();
-        } else {
-            Toast.makeText(getApplicationContext(), "Permission denied.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    public void getCurrentLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if (location != null) {
-                        // UserSession userSession = new UserSession(getApplicationContext());
-//                        userSession.SaveKeyValue("latitude", String.valueOf(location.getLatitude()));
-//                        userSession.SaveKeyValue("longitude", String.valueOf(location.getLongitude()));
-                        Bundle bundle = new Bundle();
-                        bundle.putString("lat", String.valueOf(location.getLatitude()));
-                        bundle.putString("long", String.valueOf(location.getLongitude()));
-                        HomeFragment homeFragment = new HomeFragment();
-                        homeFragment.setArguments(bundle);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
-                        Log.v("lat12", String.valueOf(location.getLatitude()));
-
-                    } else {
-                        // When location result is null
-                        LocationRequest locationRequest = new LocationRequest()
-                                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                                .setInterval(10000)
-                                .setFastestInterval(1000)
-                                .setNumUpdates(1);
-
-                        LocationCallback locationCallback = new LocationCallback() {
-                            @Override
-                            public void onLocationResult(@NonNull LocationResult locationResult) {
-                                super.onLocationResult(locationResult);
-                                Location location1 = locationResult.getLastLocation();
-                                Log.v("lat1", String.valueOf(location1.getLatitude()));
-                            }
-                        };
-                        //Request Location Update
-                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                    }
-                }
-            });
-        } else {
-            // When location service is not enabled
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
     }
 
     //
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
+
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -253,12 +182,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment temp = null;
         switch (item.getItemId()) {
-            case R.id.Home:
-                Toast.makeText(MainActivity.this, "Home Panel is open", Toast.LENGTH_SHORT).show();
-                temp = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, temp).commit();
-
-                break;
 
             case R.id.Leaves:
 
